@@ -184,8 +184,8 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
 <div id="app">
   <!-- Tab bar -->
   <div class="tab-bar">
-    <button class="tab-btn active" data-tab="form" onclick="switchTab('form',this)">📝 របាយការណ៍តាមបន្ទប់</button>
-    <button class="tab-btn" data-tab="myreports" id="myreports-tab-btn" onclick="switchTab('myreports',this)">📋 របស់ខ្ញុំ</button>
+    <button class="tab-btn active" data-tab="form" onclick="switchTab('form',this)">📝 របាយ.តាមបន្ទប់</button>
+    <button class="tab-btn" data-tab="myreports" id="myreports-tab-btn" onclick="switchTab('myreports',this)">📋 របាយ.របស់ខ្ញុំ</button>
     <button class="tab-btn" data-tab="dashboard" id="admin-tab-btn" onclick="switchTab('dashboard',this)" style="display:none">📊 គ្រប់គ្រង</button>
   </div>
 
@@ -226,8 +226,8 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
       <hr class="div">
 
       <div class="row2 fg">
-        <div><label class="flabel">នាម <span style="color:var(--red)">*</span></label><input type="text" id="fn" placeholder="នាម"></div>
-        <div><label class="flabel">គោត្តនាម <span style="color:var(--red)">*</span></label><input type="text" id="ln" placeholder="គោត្តនាម"></div>
+        <div><label class="flabel">ឈ្មោះ <span style="color:var(--red)">*</span></label><input type="text" id="fn" placeholder="នាម"></div>
+        <div><label class="flabel">នាយកដ្ឋាន <span style="color:var(--red)">*</span></label><input type="text" id="ln" placeholder="នាយកដ្ឋាន"></div>
       </div>
       <div class="row2 fg">
         <div><label class="flabel">លេខទូរសព្ទ</label><input type="tel" id="phone" placeholder="0xx xxx xxx"></div>
@@ -236,15 +236,15 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
       <div class="row2 fg">
         <div><label class="flabel">លេខបន្ទប់ <span style="color:var(--red)">*</span></label><input type="text" id="room" placeholder="101"></div>
         <div>
-          <label class="flabel">វិញ្យាសា <span style="color:var(--red)">*</span></label>
+          <label class="flabel">វិញ្ញាសា <span style="color:var(--red)">*</span></label>
           <div class="pill-group" id="subject-grp"></div>
         </div>
       </div>
 
       <hr class="div">
       <div class="row2 fg">
-        <div><label class="flabel">អ្នកឃ្លាំមើលទី១</label><input type="text" id="iv1" placeholder="ឈ្មោះ"></div>
-        <div><label class="flabel">អ្នកឃ្លាំមើលទី២</label><input type="text" id="iv2" placeholder="ឈ្មោះ"></div>
+        <div><label class="flabel">ឈ្មោះអនុរក្សទី១</label><input type="text" id="iv1" placeholder="ឈ្មោះ"></div>
+        <div><label class="flabel">ឈ្មោះអនុរក្សទី២</label><input type="text" id="iv2" placeholder="ឈ្មោះ"></div>
       </div>
     </div>
 
@@ -395,7 +395,7 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
       <p style="font-size:13px;color:var(--muted);text-align:center">សូមបញ្ចូល Password ដើម្បីចូលប្រើ</p>
       <div style="width:100%;max-width:300px">
         <input type="password" id="apass" placeholder="Password" style="margin-bottom:9px;text-align:center;font-size:16px;letter-spacing:2px" onkeydown="if(event.key==='Enter')adminLogin()">
-        <button class="btn btn-p" onclick="adminLogin()">ចូលប្រើប្រាស់</button>
+        <button class="btn btn-p" onclick="adminLogin()">ចូលប្រព័ន្ធ</button>
       </div>
     </div>
 
@@ -404,14 +404,14 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
 
       <!-- Sub-tabs -->
       <div class="settings-tab-bar">
-        <button class="stab active" onclick="switchAdminTab('reports',this)">📋 របាយការណ៍តាមបន្ទប់</button>
+        <button class="stab active" onclick="switchAdminTab('reports',this)">📋 របាយ.តាមបន្ទប់</button>
         <button class="stab" onclick="switchAdminTab('settings',this)">⚙️ Settings</button>
       </div>
 
       <!-- Reports sub-tab -->
       <div id="atab-reports">
         <div class="sum-grid">
-          <div class="sum-card"><div class="val" id="s-rooms">-</div><div class="lbl">បន្ទប់ submit</div></div>
+          <div class="sum-card"><div class="val" id="s-rooms">-</div><div class="lbl">របាយការណ៍បានផ្ញើមក</div></div>
           <div class="sum-card"><div class="val" id="s-stu">-</div><div class="lbl">បេក្ខជនសរុប</div></div>
           <div class="sum-card"><div class="val" id="s-abs">-</div><div class="lbl">អវត្តមានសរុប</div></div>
           <div class="sum-card"><div class="val" id="s-fem">-</div><div class="lbl">អវត្តមានស្រី</div></div>
@@ -483,7 +483,7 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
               <span style="font-weight:400;color:var(--muted)"> — អ្នកដែលឃើញ Dashboard</span>
             </label>
             <div class="tag-wrap" id="tw-reporter-ids" onclick="focusTagInput('ti-reporter-ids')">
-              <input class="tag-input" id="ti-reporter-ids" placeholder="វាយ Telegram ID + Enter (e.g. 123456789)..." onkeydown="tagKeydown(event,'reporter_ids')">
+              <input class="tag-input" id="ti-reporter-ids" placeholder="វាយ Telegram ID (e.g. 123456789, 123456249)..." onkeydown="tagKeydown(event,'reporter_ids')">
             </div>
             <div style="font-size:11px;color:var(--muted);margin-top:4px">
               💡 Telegram ID របស់អ្នក: <strong id="my-tg-id-display"></strong>
@@ -555,10 +555,10 @@ function updatePendingBadge() {
   document.querySelectorAll("[data-tab='form'] .pending-badge").forEach(b => b.remove());
   if (n > 0) {
     const btn = document.querySelector("[data-tab='form']");
-    if (btn) btn.innerHTML = `📝 របាយការណ៍តាមបន្ទប់<span class="pending-badge">${n}</span>`;
+    if (btn) btn.innerHTML = `📝 របាយ.តាមបន្ទប់<span class="pending-badge">${n}</span>`;
   } else {
     const btn = document.querySelector("[data-tab='form']");
-    if (btn) btn.textContent = "📝 របាយការណ៍តាមបន្ទប់";
+    if (btn) btn.textContent = "📝 របាយ.តាមបន្ទប់";
   }
 }
 
@@ -1052,15 +1052,15 @@ function renderReports(rows) {
     list.innerHTML += `
       <div class="ri">
         <div class="ri-hd">
-          <span class="ri-room">បន្ទប់ ${r.room_no}${r.building?" ("+r.building+")":""}</span>
-          <span class="ri-sub">${r.subjects||""}</span>
+          <span class="ri-room">អគារ ${r.building?" ("+r.building+")":""}បន្ទប់ ${r.room_no}</span>
+          <span class="ri-sub">វិញ្ញាសា៖ ${r.subjects||""}</span>
         </div>
-        <div class="ri-meta"><span>📍${r.centers||""}</span><span>📅${r.sessions||""}</span><span>⏱${r.start_time||""}–${r.end_time||""}</span></div>
-        <div class="ri-meta" style="margin-top:3px"><span>👤${name}</span><span>${rb(r.overall_rating)}</span></div>
+        <div class="ri-meta"><span>📍មណ្ឌលប្រឡង៖ ${r.centers||""}</span><span>📅 សម័យប្រឡង៖ ${r.sessions||""}</span><span>⏱ ចាប់ផ្តើមម៉ោង៖ ${r.start_time||""} ដល់ ${r.end_time||""}</span></div>
+        <div class="ri-meta" style="margin-top:3px"><span>👤${name}</span><span>ការវាយតម្លៃ៖ ${rb(r.overall_rating)}</span></div>
         <div class="ri-stats">
-          <span class="ri-stat">👥${r.total_stu||0}</span>
-          <span class="ri-stat">❌${r.total_abs||0}</span>
-          <span class="ri-stat">♀${r.total_female||0}</span>
+          <span class="ri-stat">👥 បេក្ខជនសរុប៖ ${r.total_stu||0}</span>
+          <span class="ri-stat">❌ អវត្តមាន៖ ${r.total_abs||0}</span>
+          <span class="ri-stat">♀ ស្រី៖ ${r.total_female||0}</span>
         </div>
       </div>`;
   });
@@ -1304,9 +1304,9 @@ function updateMyReportsBadge(count) {
   const btn = document.getElementById("myreports-tab-btn");
   if (!btn) return;
   if (count > 0) {
-    btn.innerHTML = `📋 របាយការណ៍របស់ខ្ញុំ<span class="pending-badge" style="background:var(--blue)">${count}</span>`;
+    btn.innerHTML = `📋 របាយ.របស់ខ្ញុំ<span class="pending-badge" style="background:var(--blue)">${count}</span>`;
   } else {
-    btn.textContent = "📋 របាយការណ៍របស់ខ្ញុំ";
+    btn.textContent = "📋 របាយ.របស់ខ្ញុំ";
   }
 }
 
@@ -1349,13 +1349,13 @@ function renderMyReports(serverRows, pendingQueue) {
     card.className = "mr-card";
     card.innerHTML = `
       <div class="mr-header">
-        <span class="mr-room">បន្ទប់ ${r.room_no}${r.building?" · "+r.building:""}</span>
-        <span class="mr-subj">${r.subjects||""}</span>
+        <span class="mr-room">អគារ៖ ${r.building?" · "+r.building:""} បន្ទប់៖ ${r.room_no}</span>
+        <span class="mr-subj">វិញ្ញាសា៖ ${r.subjects||""}</span>
       </div>
       <div class="mr-meta">
-        <span>📍 ${r.centers||""}</span>
-        <span>📅 ${r.sessions||""}</span>
-        <span>⏱ ${startHHMM}–${endHHMM}</span>
+        <span>📍មណ្ឌល៖ ${r.centers||""}</span>
+        <span>📅សម័យប្រឡង៖ ${r.sessions||""}</span>
+        <span>⏱ចាប់ផ្តើមម៉ោង ${startHHMM} ដល់ ${endHHMM}</span>
         <span>👤 ${name}</span>
       </div>
       <div class="mr-status ${canEdit?"editable":"locked"}" id="mrstatus-${r.room_no}-${r.subjects}">
