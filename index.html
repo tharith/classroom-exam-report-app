@@ -153,6 +153,28 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
 /* ── Actions row ── */
 .action-row{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap}
 .action-row .btn{flex:1;min-width:90px;font-size:12px;padding:10px 8px}
+
+/* ── My Reports Tab ── */
+.mr-card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);margin-bottom:10px;overflow:hidden}
+.mr-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
+.mr-room{font-size:15px;font-weight:700;color:var(--blue)}
+.mr-subj{font-size:11px;font-weight:700;background:var(--blue-l);color:var(--blue);padding:2px 9px;border-radius:10px}
+.mr-meta{padding:0 14px 10px;font-size:12px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+.mr-status{padding:8px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.mr-status.editable{background:var(--green-l);border-top:1px solid #B2DFCC}
+.mr-status.locked{background:var(--red-l);border-top:1px solid #FFCDD2}
+.mr-status.pending{background:var(--orange-l);border-top:1px solid #FFCC80}
+.mr-status-txt{font-size:12px;font-weight:700}
+.mr-status.editable .mr-status-txt{color:var(--green)}
+.mr-status.locked   .mr-status-txt{color:var(--red)}
+.mr-status.pending  .mr-status-txt{color:var(--orange)}
+.mr-edit-btn{padding:6px 16px;border-radius:var(--rs);font-family:var(--font);font-size:12px;font-weight:700;border:none;cursor:pointer;background:var(--green);color:#fff;white-space:nowrap}
+.mr-edit-btn:disabled{background:var(--muted);cursor:not-allowed}
+.mr-empty{text-align:center;padding:50px 20px;color:var(--muted)}
+.mr-empty .icon{font-size:44px;margin-bottom:10px}
+.mr-empty p{font-size:13px;font-weight:700}
+.mr-refresh-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:11px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rs);font-family:var(--font);font-size:13px;font-weight:700;color:var(--blue);cursor:pointer;margin-bottom:12px}
+.countdown{font-size:11px;font-weight:700;opacity:.85}
 </style>
 </head>
 <body>
@@ -163,7 +185,8 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
   <!-- Tab bar -->
   <div class="tab-bar">
     <button class="tab-btn active" data-tab="form" onclick="switchTab('form',this)">📝 របាយការណ៍</button>
-    <button class="tab-btn" data-tab="dashboard" onclick="switchTab('dashboard',this)">📊 ផ្ទាំងគ្រប់គ្រង</button>
+    <button class="tab-btn" data-tab="myreports" onclick="switchTab('myreports',this)">📋 របស់ខ្ញុំ</button>
+    <button class="tab-btn" data-tab="dashboard" onclick="switchTab('dashboard',this)">📊 គ្រប់គ្រង</button>
   </div>
 
   <!-- Offline bar -->
@@ -316,6 +339,50 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
       </div>
       <div class="tg-contacts" id="tg-contacts"></div>
     </div>
+  </div>
+
+  <!-- ══════════ MY REPORTS TAB ══════════ -->
+  <div id="tab-myreports" class="tab-content">
+
+    <button class="mr-refresh-btn" onclick="loadMyReports()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="23,4 23,10 17,10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+      ទាញទិន្នន័យថ្មី
+    </button>
+
+    <!-- Summary strip -->
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <div style="flex:1;background:var(--surface);border-radius:var(--rs);padding:10px;text-align:center;border:1px solid var(--border);box-shadow:var(--sh)">
+        <div style="font-size:22px;font-weight:700;color:var(--blue)" id="mr-total">-</div>
+        <div style="font-size:10px;color:var(--muted);font-weight:700">បន្ទប់ submit</div>
+      </div>
+      <div style="flex:1;background:var(--surface);border-radius:var(--rs);padding:10px;text-align:center;border:1px solid var(--border);box-shadow:var(--sh)">
+        <div style="font-size:22px;font-weight:700;color:var(--green)" id="mr-editable">-</div>
+        <div style="font-size:10px;color:var(--muted);font-weight:700">អាចកែបាន</div>
+      </div>
+      <div style="flex:1;background:var(--surface);border-radius:var(--rs);padding:10px;text-align:center;border:1px solid var(--border);box-shadow:var(--sh)">
+        <div style="font-size:22px;font-weight:700;color:var(--orange)" id="mr-pending-count">-</div>
+        <div style="font-size:10px;color:var(--muted);font-weight:700">រង់ចាំ Sync</div>
+      </div>
+    </div>
+
+    <!-- List -->
+    <div id="mr-list"></div>
+
+    <!-- Empty state -->
+    <div id="mr-empty" style="display:none">
+      <div class="mr-empty">
+        <div class="icon">📭</div>
+        <p>អ្នកមិនទាន់មានរបាយការណ៍ណា</p>
+        <p style="font-size:12px;color:var(--muted);margin-top:4px;font-weight:400">ចុចប៊ូតុង "ទាញទិន្នន័យថ្មី" ឬបញ្ចូលរបាយការណ៍ថ្មី</p>
+      </div>
+    </div>
+
+    <!-- Offline note -->
+    <div id="mr-offline-note" style="display:none;text-align:center;padding:16px;background:var(--orange-l);border-radius:var(--rs);border:1.5px solid #FFCC80;margin-top:8px">
+      <div style="font-size:13px;font-weight:700;color:var(--orange)">⚡ គ្មាន Internet</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">បង្ហាញតែ pending data ក្នុង queue</div>
+    </div>
+
   </div>
 
   <!-- ══════════ DASHBOARD TAB ══════════ -->
@@ -1050,6 +1117,214 @@ function switchTab(tab, el) {
   document.querySelectorAll(".tab-content").forEach(c=>c.classList.remove("active"));
   document.getElementById("tab-"+tab).classList.add("active");
   el.classList.add("active");
+  if (tab === "myreports") loadMyReports();
+}
+
+// ══════════════════════════════════════════════
+// MY REPORTS TAB
+// ══════════════════════════════════════════════
+let myReportsData   = []; // from server
+let countdownTimers = [];
+
+async function loadMyReports() {
+  // Clear old timers
+  countdownTimers.forEach(t => clearInterval(t));
+  countdownTimers = [];
+
+  const list    = document.getElementById("mr-list");
+  const empty   = document.getElementById("mr-empty");
+  const offline = document.getElementById("mr-offline-note");
+  list.innerHTML = "";
+  empty.style.display = "none";
+  offline.style.display = "none";
+
+  // Pending items from localStorage
+  const pending = getPending();
+
+  if (!navigator.onLine) {
+    offline.style.display = "block";
+    myReportsData = [];
+    renderMyReports([], pending);
+    return;
+  }
+
+  showLoading(true);
+  try {
+    // Fetch all reports for this telegram_id via server
+    const r = await fetch(GAS_URL + "?action=getMyReports&telegram_id=" + encodeURIComponent(TG_ID));
+    const d = await r.json();
+    myReportsData = d.rows || [];
+  } catch(e) {
+    showToast("មិនអាចទាញទិន្នន័យ: "+e.message, "error");
+    myReportsData = [];
+  }
+  showLoading(false);
+  renderMyReports(myReportsData, pending);
+}
+
+function timeToMinLocal(t) {
+  if (!t) return 0;
+  const [h,m] = String(t).split(":").map(Number);
+  return h*60+m;
+}
+
+function nowMinLocal() {
+  const n = new Date();
+  return n.getHours()*60+n.getMinutes();
+}
+
+function getDeadlineMin(endTime, addTime) {
+  return timeToMinLocal(endTime) + (parseInt(addTime)||0);
+}
+
+function formatCountdown(deadlineMin) {
+  const diffMin = deadlineMin - nowMinLocal();
+  if (diffMin <= 0) return null;
+  const h = Math.floor(diffMin/60);
+  const m = diffMin % 60;
+  return h > 0 ? `${h}ម៉ោង ${m}នាទី` : `${m}នាទី`;
+}
+
+function renderMyReports(serverRows, pendingQueue) {
+  const list  = document.getElementById("mr-list");
+  const empty = document.getElementById("mr-empty");
+  list.innerHTML = "";
+
+  const addTime = settings.additional_time || 0;
+
+  // Build combined list: server records + pending (not yet on server)
+  // Pending items that have same key as server → already synced, skip pending
+  const serverKeys = new Set(serverRows.map(r => makeKey(r)));
+  const pendingOnly = pendingQueue.filter(p => !serverKeys.has(makeKey(p)));
+
+  const total     = serverRows.length + pendingOnly.length;
+  const editCount = serverRows.filter(r => {
+    const dl = getDeadlineMin(r.end_time, addTime);
+    return nowMinLocal() <= dl;
+  }).length;
+
+  document.getElementById("mr-total").textContent        = total;
+  document.getElementById("mr-editable").textContent     = editCount;
+  document.getElementById("mr-pending-count").textContent = pendingOnly.length;
+
+  if (total === 0) { empty.style.display="block"; return; }
+  empty.style.display = "none";
+
+  // ── Render server records ──
+  serverRows.forEach(r => {
+    const deadlineMin = getDeadlineMin(r.end_time, addTime);
+    const canEdit     = nowMinLocal() <= deadlineMin;
+    const name        = [r.first_name, r.last_name].filter(Boolean).join(" ");
+
+    const card = document.createElement("div");
+    card.className = "mr-card";
+    card.innerHTML = `
+      <div class="mr-header">
+        <span class="mr-room">បន្ទប់ ${r.room_no}${r.building?" · "+r.building:""}</span>
+        <span class="mr-subj">${r.subjects||""}</span>
+      </div>
+      <div class="mr-meta">
+        <span>📍 ${r.centers||""}</span>
+        <span>📅 ${r.sessions||""}</span>
+        <span>⏱ ${r.start_time||""}–${r.end_time||""}</span>
+        <span>👤 ${name}</span>
+      </div>
+      <div class="mr-status ${canEdit?"editable":"locked"}" id="mrstatus-${r.room_no}-${r.subjects}">
+        <div>
+          <div class="mr-status-txt">${canEdit ? "✅ អាចកែសម្រួលបាន" : "🔒 ហួសម៉ោងកែ"}</div>
+          ${canEdit ? `<div class="countdown" id="cd-${r.room_no}-${r.subjects}">រង់ចាំ...</div>` : `<div class="countdown" style="color:var(--muted)">បញ្ចប់ ${r.end_time}${addTime>0?" (+"+addTime+"នាទី)":""}</div>`}
+        </div>
+        <button class="mr-edit-btn" ${canEdit?"":"disabled"} onclick="loadAndEdit(${JSON.stringify(r).replace(/"/g,'&quot;')})">
+          ${canEdit ? "✏️ កែ" : "🔒 បិទ"}
+        </button>
+      </div>`;
+    list.appendChild(card);
+
+    // Start countdown for editable records
+    if (canEdit) {
+      const cdEl = document.getElementById(`cd-${r.room_no}-${r.subjects}`);
+      const statusEl = card.querySelector(".mr-status");
+      const editBtn  = card.querySelector(".mr-edit-btn");
+      const timer = setInterval(() => {
+        const remaining = formatCountdown(deadlineMin);
+        if (!remaining) {
+          clearInterval(timer);
+          if (cdEl) cdEl.textContent = "ហួសម៉ោងហើយ";
+          statusEl.className = "mr-status locked";
+          statusEl.querySelector(".mr-status-txt").textContent = "🔒 ហួសម៉ោងកែ";
+          if (editBtn) { editBtn.disabled = true; editBtn.textContent = "🔒 បិទ"; }
+          // Update summary
+          const cur = parseInt(document.getElementById("mr-editable").textContent)||0;
+          document.getElementById("mr-editable").textContent = Math.max(0, cur-1);
+        } else {
+          if (cdEl) cdEl.textContent = "⏳ នៅសល់ " + remaining;
+        }
+      }, 30000); // update every 30s
+      countdownTimers.push(timer);
+      // Initial display
+      const rem = formatCountdown(deadlineMin);
+      if (cdEl && rem) cdEl.textContent = "⏳ នៅសល់ " + rem;
+    }
+  });
+
+  // ── Render pending-only items ──
+  pendingOnly.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "mr-card";
+    const name = [p.first_name, p.last_name].filter(Boolean).join(" ");
+    card.innerHTML = `
+      <div class="mr-header">
+        <span class="mr-room">បន្ទប់ ${p.room_no}${p.building?" · "+p.building:""}</span>
+        <span class="mr-subj">${p.subjects||""}</span>
+      </div>
+      <div class="mr-meta">
+        <span>📍 ${p.centers||""}</span>
+        <span>📅 ${p.sessions||""}</span>
+        <span>⏱ ${p.start_time||""}–${p.end_time||""}</span>
+        <span>👤 ${name}</span>
+      </div>
+      <div class="mr-status pending">
+        <div>
+          <div class="mr-status-txt">⏳ រង់ចាំ Sync</div>
+          <div class="countdown">គ្មាន Internet — នឹង Sync ដោយស្វ័យប្រវត្តិ</div>
+        </div>
+        <button class="mr-edit-btn" style="background:var(--orange)" onclick="loadPendingEdit(${JSON.stringify(p).replace(/"/g,'&quot;')})">
+          ✏️ កែ
+        </button>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+// Load server record into form for editing
+async function loadAndEdit(record) {
+  showLoading(true);
+  try {
+    const r = await postGAS({
+      action     : "getMyReport",
+      telegram_id: TG_ID,
+      room_no    : record.room_no,
+      sessions   : record.sessions,
+      subjects   : record.subjects
+    });
+    if (r.found && r.editable) {
+      prefillForm(r.data);
+      switchTab("form", document.querySelector("[data-tab='form']"));
+      showToast("បានផ្ទុកទិន្នន័យ — កែ និង Submit ម្តងទៀត", "success");
+    } else if (r.found && !r.editable) {
+      showToast("ម៉ោងប្រឡងបញ្ចប់ហើយ — មិនអាចកែបាន", "error");
+    } else {
+      showToast("រករបាយការណ៍មិនឃើញ", "error");
+    }
+  } catch(e) { showToast("Error: "+e.message, "error"); }
+  showLoading(false);
+}
+
+// Load pending item into form for editing
+function loadPendingEdit(pendingData) {
+  prefillForm(pendingData);
+  switchTab("form", document.querySelector("[data-tab='form']"));
+  showToast("បានផ្ទុក draft — កែ និង Submit ម្តងទៀត", "warn");
 }
 
 // ══════════════════════════════════════════════
