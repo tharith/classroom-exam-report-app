@@ -344,7 +344,7 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
   <!-- ══════════ MY REPORTS TAB ══════════ -->
   <div id="tab-myreports" class="tab-content">
 
-    <button class="mr-refresh-btn" onclick="loadMyReports()">
+    <button class="mr-refresh-btn" onclick="loadMyReports(true)">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="23,4 23,10 17,10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
       ទាញទិន្នន័យថ្មី
     </button>
@@ -611,9 +611,38 @@ window.addEventListener("load", async () => {
   window.addEventListener("hashchange", checkAdminAccess);
 
   updatePendingBadge();
-  await loadSettings(); // after this, checkAdminAccess runs inside renderSettings
+  await loadSettings(); // checkAdminAccess runs inside here
   await checkMyDraft();
+
+  // Silently load my reports count → show badge without user clicking tab
+  silentLoadMyReportsBadge();
 });
+
+async function silentLoadMyReportsBadge() {
+  // Show pending count immediately from localStorage
+  const pending = getPending();
+  const pendingCount = pending.length;
+
+  if (!navigator.onLine) {
+    updateMyReportsBadge(pendingCount);
+    return;
+  }
+
+  try {
+    const r = await fetch(GAS_URL + "?action=getMyReports&telegram_id=" + encodeURIComponent(TG_ID));
+    const d = await r.json();
+    const serverRows  = d.rows || [];
+    const serverKeys  = new Set(serverRows.map(r => makeKey(r)));
+    const pendingOnly = pending.filter(p => !serverKeys.has(makeKey(p)));
+    const total       = serverRows.length + pendingOnly.length;
+    updateMyReportsBadge(total);
+    // Cache for when user opens the tab
+    myReportsData = serverRows;
+  } catch {
+    // Network error → show at least pending count
+    updateMyReportsBadge(pendingCount);
+  }
+}
 
 function checkAdminAccess() {
   // Allow via #admin hash OR telegram_reporter_id match
@@ -938,6 +967,9 @@ async function submitReport() {
       savePending(q);
       updatePendingBadge();
       if (tgApp) tgApp.HapticFeedback?.notificationOccurred("success");
+      // Refresh my reports cache + badge
+      myReportsData = [];
+      silentLoadMyReportsBadge();
     } else {
       showToast(res.message || "មានបញ្ហា", "error");
     }
@@ -1175,7 +1207,7 @@ function switchTab(tab, el) {
 let myReportsData   = []; // from server
 let countdownTimers = [];
 
-async function loadMyReports() {
+async function loadMyReports(forceRefresh = false) {
   // Clear old timers
   countdownTimers.forEach(t => clearInterval(t));
   countdownTimers = [];
@@ -1187,7 +1219,6 @@ async function loadMyReports() {
   empty.style.display = "none";
   offline.style.display = "none";
 
-  // Pending items from localStorage
   const pending = getPending();
 
   if (!navigator.onLine) {
@@ -1197,9 +1228,14 @@ async function loadMyReports() {
     return;
   }
 
+  // Use cached data unless forced refresh
+  if (myReportsData.length > 0 && !forceRefresh) {
+    renderMyReports(myReportsData, pending);
+    return;
+  }
+
   showLoading(true);
   try {
-    // Fetch all reports for this telegram_id via server
     const r = await fetch(GAS_URL + "?action=getMyReports&telegram_id=" + encodeURIComponent(TG_ID));
     const d = await r.json();
     myReportsData = d.rows || [];
