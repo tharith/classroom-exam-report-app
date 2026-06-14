@@ -498,7 +498,7 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
 // ══════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════
-const GAS_URL = "https://script.google.com/macros/s/AKfycbw9Yh_qoWSoVjpcotVCWePF0GOc80omJRYPGJCI6dzAZ69zmEJe5_QpAK11VBkiNJ37/exec"; // ← ប្តូរ
+const GAS_URL = "ខhttps://script.google.com/macros/s/AKfycbw9Yh_qoWSoVjpcotVCWePF0GOc80omJRYPGJCI6dzAZ69zmEJe5_QpAK11VBkiNJ37/exec";
 
 // ── Telegram ──
 const tgApp    = window.Telegram?.WebApp;
@@ -742,11 +742,15 @@ function addObs(prefill) {
   d.innerHTML = `
     <div class="inum">ល.រ ${obsIdx}</div>
     <button class="rm" onclick="removeItem('${id}')">✕</button>
-    <input type="text" placeholder="ឈ្មោះបេក្ខជន" class="obs-name" value="${prefill?.name||''}" style="width:100%;margin-bottom:7px">
     <div class="row2" style="margin-bottom:7px">
+      <input type="text" placeholder="ឈ្មោះបេក្ខជន" class="obs-name" value="${prefill?.name||''}">
       <input type="text" placeholder="លេខចុះឈ្មោះ" class="obs-no" value="${prefill?.no||''}">
-      <input type="text" placeholder="ចំណុចកត់សម្គាល់" class="obs-note" value="${prefill?.note||''}">
     </div>
+    <div class="row2" style="margin-bottom:7px">
+      <input type="date" class="obs-date" value="${prefill?.date||''}">
+      <input type="time" class="obs-time" value="${prefill?.time||''}">
+    </div>
+    <input type="text" placeholder="ចំណុចកត់សម្គាល់" class="obs-note" value="${prefill?.note||''}" style="width:100%;margin-bottom:7px">
     <input type="text" placeholder="ចំណាត់ការ" class="obs-action" value="${prefill?.action||''}" style="width:100%">
   `;
   document.getElementById("obs-list").appendChild(d);
@@ -770,10 +774,12 @@ function collectForm() {
     gender:el.querySelector(".abs-gender")?.value||""
   }));
   const observations = [...document.querySelectorAll("#obs-list .dyn-item")].map(el => ({
-    name:el.querySelector(".obs-name")?.value||"",
-    no:el.querySelector(".obs-no")?.value||"",
-    note:el.querySelector(".obs-note")?.value||"",
-    action:el.querySelector(".obs-action")?.value||""
+    name  : el.querySelector(".obs-name")?.value||"",
+    no    : el.querySelector(".obs-no")?.value||"",
+    date  : el.querySelector(".obs-date")?.value||"",
+    time  : el.querySelector(".obs-time")?.value||"",
+    note  : el.querySelector(".obs-note")?.value||"",
+    action: el.querySelector(".obs-action")?.value||""
   }));
 
   return {
@@ -1162,6 +1168,36 @@ async function loadMyReports() {
   renderMyReports(myReportsData, pending);
 }
 
+// ── Convert Google Sheets time serial → "HH:MM" ──
+// Sheets stores time as fraction of a day (e.g. 0.5 = 12:00)
+// or as a Date object serialized as ISO string "1899-12-30T..."
+function sheetsTimeToHHMM(val) {
+  if (!val) return "";
+  const s = String(val);
+
+  // Already HH:MM format
+  if (/^\d{1,2}:\d{2}/.test(s)) return s.slice(0,5);
+
+  // ISO string from GAS (e.g. "1899-12-30T12:19:56.000Z")
+  if (s.includes("T")) {
+    const d = new Date(s);
+    const h = d.getUTCHours().toString().padStart(2,"0");
+    const m = d.getUTCMinutes().toString().padStart(2,"0");
+    return h+":"+m;
+  }
+
+  // Numeric fraction (0.0–1.0) — GAS sometimes sends as number
+  const n = parseFloat(s);
+  if (!isNaN(n) && n >= 0 && n < 1) {
+    const totalMin = Math.round(n * 24 * 60);
+    const h = Math.floor(totalMin/60).toString().padStart(2,"0");
+    const mm = (totalMin%60).toString().padStart(2,"0");
+    return h+":"+mm;
+  }
+
+  return s; // fallback
+}
+
 function timeToMinLocal(t) {
   if (!t) return 0;
   const [h,m] = String(t).split(":").map(Number);
@@ -1212,7 +1248,10 @@ function renderMyReports(serverRows, pendingQueue) {
 
   // ── Render server records ──
   serverRows.forEach(r => {
-    const deadlineMin = getDeadlineMin(r.end_time, addTime);
+    // Normalize time values from Sheets serial format → HH:MM
+    const startHHMM   = sheetsTimeToHHMM(r.start_time);
+    const endHHMM     = sheetsTimeToHHMM(r.end_time);
+    const deadlineMin = getDeadlineMin(endHHMM, addTime);
     const canEdit     = nowMinLocal() <= deadlineMin;
     const name        = [r.first_name, r.last_name].filter(Boolean).join(" ");
 
@@ -1226,13 +1265,15 @@ function renderMyReports(serverRows, pendingQueue) {
       <div class="mr-meta">
         <span>📍 ${r.centers||""}</span>
         <span>📅 ${r.sessions||""}</span>
-        <span>⏱ ${r.start_time||""}–${r.end_time||""}</span>
+        <span>⏱ ${startHHMM}–${endHHMM}</span>
         <span>👤 ${name}</span>
       </div>
       <div class="mr-status ${canEdit?"editable":"locked"}" id="mrstatus-${r.room_no}-${r.subjects}">
         <div>
           <div class="mr-status-txt">${canEdit ? "✅ អាចកែសម្រួលបាន" : "🔒 ហួសម៉ោងកែ"}</div>
-          ${canEdit ? `<div class="countdown" id="cd-${r.room_no}-${r.subjects}">រង់ចាំ...</div>` : `<div class="countdown" style="color:var(--muted)">បញ្ចប់ ${r.end_time}${addTime>0?" (+"+addTime+"នាទី)":""}</div>`}
+          ${canEdit
+            ? `<div class="countdown" id="cd-${r.room_no}-${r.subjects}">រង់ចាំ...</div>`
+            : `<div class="countdown" style="color:var(--muted)">បញ្ចប់ ${endHHMM}${addTime>0?" (+"+addTime+"នាទី)":""}</div>`}
         </div>
         <button class="mr-edit-btn" ${canEdit?"":"disabled"} onclick="loadAndEdit(${JSON.stringify(r).replace(/"/g,'&quot;')})">
           ${canEdit ? "✏️ កែ" : "🔒 បិទ"}
