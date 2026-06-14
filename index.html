@@ -185,7 +185,7 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
   <!-- Tab bar -->
   <div class="tab-bar">
     <button class="tab-btn active" data-tab="form" onclick="switchTab('form',this)">📝 របាយការណ៍</button>
-    <button class="tab-btn" data-tab="myreports" onclick="switchTab('myreports',this)">📋 របស់ខ្ញុំ</button>
+    <button class="tab-btn" data-tab="myreports" id="myreports-tab-btn" onclick="switchTab('myreports',this)">📋 របស់ខ្ញុំ</button>
     <button class="tab-btn" data-tab="dashboard" id="admin-tab-btn" onclick="switchTab('dashboard',this)" style="display:none">📊 គ្រប់គ្រង</button>
   </div>
 
@@ -1264,6 +1264,16 @@ function formatCountdown(deadlineMin) {
   return h > 0 ? `${h}ម៉ោង ${m}នាទី` : `${m}នាទី`;
 }
 
+function updateMyReportsBadge(count) {
+  const btn = document.getElementById("myreports-tab-btn");
+  if (!btn) return;
+  if (count > 0) {
+    btn.innerHTML = `📋 របស់ខ្ញុំ<span class="pending-badge" style="background:var(--blue)">${count}</span>`;
+  } else {
+    btn.textContent = "📋 របស់ខ្ញុំ";
+  }
+}
+
 function renderMyReports(serverRows, pendingQueue) {
   const list  = document.getElementById("mr-list");
   const empty = document.getElementById("mr-empty");
@@ -1282,9 +1292,10 @@ function renderMyReports(serverRows, pendingQueue) {
     return nowMinLocal() <= dl;
   }).length;
 
-  document.getElementById("mr-total").textContent        = total;
-  document.getElementById("mr-editable").textContent     = editCount;
+  document.getElementById("mr-total").textContent         = total;
+  document.getElementById("mr-editable").textContent      = editCount;
   document.getElementById("mr-pending-count").textContent = pendingOnly.length;
+  updateMyReportsBadge(total);
 
   if (total === 0) { empty.style.display="block"; return; }
   empty.style.display = "none";
