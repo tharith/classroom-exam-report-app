@@ -555,10 +555,10 @@ function updatePendingBadge() {
   document.querySelectorAll("[data-tab='form'] .pending-badge").forEach(b => b.remove());
   if (n > 0) {
     const btn = document.querySelector("[data-tab='form']");
-    if (btn) btn.innerHTML = `📝 របាយការណ៍<span class="pending-badge">${n}</span>`;
+    if (btn) btn.innerHTML = `📝 របាយការណ៍តាមបន្ទប់<span class="pending-badge">${n}</span>`;
   } else {
     const btn = document.querySelector("[data-tab='form']");
-    if (btn) btn.textContent = "📝 របាយការណ៍";
+    if (btn) btn.textContent = "📝 របាយការណ៍តាមបន្ទប់";
   }
 }
 
