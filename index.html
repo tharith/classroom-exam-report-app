@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>Classroom Exam Report</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{
+  --blue:#1A5CDE;--blue-d:#1248B8;--blue-l:#EEF3FD;--blue-m:#4478E8;
+  --red:#E53935;--red-l:#FDECEA;
+  --green:#1B8A4C;--green-l:#E8F5EE;
+  --orange:#E65100;--orange-l:#FFF3E0;
+  --bg:#F0F4FB;--surface:#FFFFFF;
+  --border:#DDE3EE;--border-f:#4478E8;
+  --text:#1A1F2E;--muted:#6B7591;--label:#3A4468;
+  --r:12px;--rs:8px;
+  --sh:0 2px 10px rgba(26,92,222,.09);
+  --font:'Hanuman',sans-serif;
+}
+@import url('https://fonts.googleapis.com/css2?family=Hanuman:wght@400;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;min-height:100vh;overscroll-behavior:none}
+
+/* ── Tab bar ── */
+.tab-bar{display:flex;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.tab-btn{flex:1;padding:13px 4px;font-family:var(--font);font-size:12px;font-weight:700;color:var(--muted);background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;transition:.2s;letter-spacing:.2px}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
+.tab-content{display:none;padding:14px;animation:fadeIn .2s ease}
+.tab-content.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ── Cards ── */
+.card{background:var(--surface);border-radius:var(--r);padding:14px;margin-bottom:12px;box-shadow:var(--sh);border:1px solid var(--border)}
+.sec-title{font-size:13px;font-weight:700;color:var(--blue);padding-bottom:8px;border-bottom:2px solid var(--blue-l);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.sec-title::before{content:'';width:3px;height:15px;background:var(--blue);border-radius:2px;flex-shrink:0}
+
+/* ── Banner ── */
+.banner{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-m) 100%);color:#fff;border-radius:var(--r);padding:14px 16px;margin-bottom:12px;text-align:center}
+.banner .t1{font-size:13px;font-weight:700;line-height:1.5}
+.banner .t2{font-size:11px;opacity:.85;margin-top:3px;line-height:1.5}
+
+/* ── Form fields ── */
+.flabel{display:block;font-size:12px;font-weight:700;color:var(--label);margin-bottom:5px}
+input[type=text],input[type=tel],input[type=time],input[type=number],input[type=password],textarea,select{
+  width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--rs);
+  font-family:var(--font);font-size:14px;color:var(--text);background:var(--surface);
+  transition:.15s;outline:none;-webkit-appearance:none;appearance:none
+}
+input:focus,textarea:focus,select:focus{border-color:var(--border-f);box-shadow:0 0 0 3px rgba(68,120,232,.11)}
+textarea{resize:vertical;min-height:76px}
+.fg{margin-bottom:11px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
+
+/* ── Radio / Checkbox pills ── */
+.pill-group{display:flex;flex-wrap:wrap;gap:7px}
+.pill-group.col{flex-direction:column}
+.pill{display:flex;align-items:center;gap:6px;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:700;color:var(--label);background:var(--surface);transition:.15s;flex:1;min-width:72px}
+.pill:has(input:checked){border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+.pill input{accent-color:var(--blue);flex-shrink:0}
+.inline-r{display:flex;flex-wrap:wrap;gap:7px}
+.inline-r label{display:flex;align-items:center;gap:5px;padding:7px 13px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:13px;cursor:pointer;font-weight:700;color:var(--label);transition:.15s}
+.inline-r label:has(input:checked){border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+.inline-r input{accent-color:var(--blue)}
+
+/* ── Stats boxes ── */
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:11px}
+.stat-box{border:1.5px solid var(--border);border-radius:var(--rs);padding:9px 6px;text-align:center}
+.stat-box label{display:block;font-size:10px;color:var(--muted);margin-bottom:3px;font-weight:700}
+.stat-box input{border:none;text-align:center;font-size:20px;font-weight:700;color:var(--blue);padding:0;background:transparent;width:100%;outline:none}
+
+/* ── Dynamic items ── */
+.dyn-item{background:var(--blue-l);border:1.5px solid #C5D5F5;border-radius:var(--rs);padding:11px;margin-bottom:8px;position:relative}
+.dyn-item .inum{font-size:11px;font-weight:700;color:var(--blue);margin-bottom:7px}
+.dyn-item .rm{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--red);font-size:18px;cursor:pointer;line-height:1;padding:0}
+
+/* ── Buttons ── */
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 18px;border-radius:var(--rs);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;border:none;transition:.15s;width:100%}
+.btn-p{background:var(--blue);color:#fff}
+.btn-p:active{background:var(--blue-d)}
+.btn-o{background:var(--surface);color:var(--blue);border:1.5px solid var(--blue)}
+.btn-o:active{background:var(--blue-l)}
+.btn-danger{background:var(--red-l);color:var(--red);border:1.5px solid var(--red)}
+.btn-success{background:var(--green-l);color:var(--green);border:1.5px solid var(--green)}
+.btn-warn{background:var(--orange-l);color:var(--orange);border:1.5px solid var(--orange)}
+.btn-sm{padding:7px 13px;font-size:12px;width:auto}
+
+/* ── Toast ── */
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1A1F2E;color:#fff;padding:11px 18px;border-radius:var(--r);font-size:13px;font-weight:700;z-index:999;opacity:0;transition:.3s;pointer-events:none;text-align:center;max-width:88%;min-width:200px;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+#toast.show{opacity:1}
+#toast.success{background:var(--green)}
+#toast.error{background:var(--red)}
+#toast.warn{background:var(--orange)}
+
+/* ── Loading ── */
+#loading{display:none;position:fixed;inset:0;background:rgba(240,244,251,.85);z-index:998;align-items:center;justify-content:center;flex-direction:column;gap:10px;backdrop-filter:blur(2px)}
+#loading.show{display:flex}
+.spinner{width:34px;height:34px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Offline bar ── */
+#offline-bar{display:none;position:sticky;top:47px;z-index:199;background:var(--orange);color:#fff;text-align:center;padding:8px 12px;font-size:12px;font-weight:700;gap:6px;align-items:center;justify-content:center}
+#offline-bar.show{display:flex}
+#offline-bar .retry-btn{background:rgba(255,255,255,.25);border:none;color:#fff;border-radius:6px;padding:3px 10px;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;margin-left:8px}
+
+/* ── Pending badge ── */
+.pending-badge{background:var(--orange);color:#fff;border-radius:10px;font-size:10px;font-weight:700;padding:1px 7px;margin-left:4px}
+
+/* ── Dashboard ── */
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.sum-card{background:var(--surface);border-radius:var(--r);padding:13px;text-align:center;box-shadow:var(--sh);border:1px solid var(--border)}
+.sum-card .val{font-size:26px;font-weight:700;color:var(--blue)}
+.sum-card .lbl{font-size:10px;color:var(--muted);font-weight:700;margin-top:2px}
+.filter-row{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px;margin-bottom:11px;scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}
+.chip{padding:6px 13px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);font-family:var(--font);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap;transition:.15s;flex-shrink:0}
+.chip.active{border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+.ri{background:var(--surface);border-radius:var(--rs);padding:12px;margin-bottom:8px;border:1px solid var(--border);box-shadow:var(--sh)}
+.ri-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.ri-room{font-weight:700;color:var(--blue);font-size:14px}
+.ri-sub{font-size:11px;font-weight:700;background:var(--blue-l);color:var(--blue);padding:2px 8px;border-radius:10px}
+.ri-meta{font-size:12px;color:var(--muted);display:flex;gap:9px;flex-wrap:wrap}
+.ri-stats{display:flex;gap:10px;margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
+.ri-stat{font-size:12px;color:var(--label);font-weight:700}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700}
+.b-l{background:#E8F5EE;color:#1B8A4C}.b-m{background:#FFF8E1;color:#F57F17}.b-h{background:#FDECEA;color:#E53935}
+
+/* ── Admin login ── */
+#admin-login{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:14px;min-height:60vh}
+#admin-login .lock{font-size:46px}
+#admin-panel{display:none}
+
+/* ── Settings editor ── */
+.tag-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:8px;border:1.5px solid var(--border);border-radius:var(--rs);min-height:42px;background:var(--surface);cursor:text}
+.tag{display:flex;align-items:center;gap:4px;background:var(--blue-l);border:1px solid #C5D5F5;color:var(--blue);padding:3px 9px;border-radius:20px;font-size:12px;font-weight:700}
+.tag .tx{cursor:pointer;color:var(--red);font-size:14px;line-height:1}
+.tag-input{border:none;outline:none;font-family:var(--font);font-size:13px;color:var(--text);flex:1;min-width:80px;padding:2px 0;background:transparent}
+.settings-tab-bar{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;scrollbar-width:none}
+.settings-tab-bar::-webkit-scrollbar{display:none}
+.stab{padding:7px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);font-family:var(--font);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.stab.active{border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+
+/* ── Note box ── */
+.note{background:#FFFDE7;border:1.5px solid #F9A825;border-radius:var(--rs);padding:9px 12px;font-size:12px;color:#5D4037;margin-top:8px;line-height:1.6}
+.q-lbl{font-size:13px;color:var(--label);font-weight:700;margin-bottom:7px;line-height:1.6}
+
+/* ── TG contact ── */
+.tg-contacts{display:flex;gap:7px;margin-top:7px;flex-wrap:wrap}
+.tg-btn{display:flex;align-items:center;gap:7px;background:#0088CC;color:#fff;border-radius:var(--rs);padding:9px 13px;font-family:var(--font);font-size:13px;font-weight:700;border:none;cursor:pointer;text-decoration:none;flex:1}
+.tg-ico{width:20px;height:20px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* ── Actions row ── */
+.action-row{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap}
+.action-row .btn{flex:1;min-width:90px;font-size:12px;padding:10px 8px}
+</style>
+</head>
+<body>
+<div id="loading"><div class="spinner"></div><span style="color:var(--muted);font-size:13px;font-weight:700">កំពុងដំណើរការ...</span></div>
+<div id="toast"></div>
+
+<div id="app">
+  <!-- Tab bar -->
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="form" onclick="switchTab('form',this)">📝 របាយការណ៍</button>
+    <button class="tab-btn" data-tab="dashboard" onclick="switchTab('dashboard',this)">📊 ផ្ទាំងគ្រប់គ្រង</button>
+  </div>
+
+  <!-- Offline bar -->
+  <div id="offline-bar">
+    ⚡ គ្មាន Internet — ទិន្នន័យរង់ចាំ sync
+    <button class="retry-btn" onclick="retryPending()">Retry</button>
+  </div>
+
+  <!-- ══════════ FORM TAB ══════════ -->
+  <div id="tab-form" class="tab-content active">
+
+    <div class="banner">
+      <div class="t1" id="bn-t1">កំពុងទាញទិន្នន័យ...</div>
+      <div class="t2" id="bn-t2"></div>
+    </div>
+
+    <!-- Header info -->
+    <div class="card">
+      <div class="sec-title">ព័ត៌មានទូទៅ</div>
+
+      <div class="fg">
+        <label class="flabel">ចំណងជើងការប្រឡង <span style="color:var(--red)">*</span></label>
+        <div class="pill-group col" id="title-grp"></div>
+      </div>
+
+      <div class="row2 fg">
+        <div>
+          <label class="flabel">សម័យប្រឡង <span style="color:var(--red)">*</span></label>
+          <div class="pill-group col" id="session-grp"></div>
+        </div>
+        <div>
+          <label class="flabel">មណ្ឌលប្រឡង <span style="color:var(--red)">*</span></label>
+          <div class="pill-group col" id="center-grp"></div>
+        </div>
+      </div>
+
+      <hr class="div">
+
+      <div class="row2 fg">
+        <div><label class="flabel">នាម <span style="color:var(--red)">*</span></label><input type="text" id="fn" placeholder="នាម"></div>
+        <div><label class="flabel">គោត្តនាម <span style="color:var(--red)">*</span></label><input type="text" id="ln" placeholder="គោត្តនាម"></div>
+      </div>
+      <div class="row2 fg">
+        <div><label class="flabel">លេខទូរសព្ទ</label><input type="tel" id="phone" placeholder="0xx xxx xxx"></div>
+        <div><label class="flabel">អគារ</label><input type="text" id="building" placeholder="A"></div>
+      </div>
+      <div class="row2 fg">
+        <div><label class="flabel">លេខបន្ទប់ <span style="color:var(--red)">*</span></label><input type="text" id="room" placeholder="101"></div>
+        <div>
+          <label class="flabel">វិញ្យាសា <span style="color:var(--red)">*</span></label>
+          <div class="pill-group" id="subject-grp"></div>
+        </div>
+      </div>
+
+      <hr class="div">
+      <div class="row2 fg">
+        <div><label class="flabel">អ្នកឃ្លាំមើលទី១</label><input type="text" id="iv1" placeholder="ឈ្មោះ"></div>
+        <div><label class="flabel">អ្នកឃ្លាំមើលទី២</label><input type="text" id="iv2" placeholder="ឈ្មោះ"></div>
+      </div>
+    </div>
+
+    <!-- Section I -->
+    <div class="card">
+      <div class="sec-title">I. សភាពការណ៍នៅវេទ</div>
+      <div class="row2 fg">
+        <div><label class="flabel">ម៉ោងចាប់ផ្តើម</label><input type="time" id="st"></div>
+        <div><label class="flabel">ម៉ោងបញ្ចប់</label><input type="time" id="et"></div>
+      </div>
+
+      <div class="fg">
+        <div class="q-lbl">- តើអ្នករក្រោងបានដឹកជម្រុញអ្នករៀនចូលអង្គុយ និងចែករំលែកឯកសារ/ក្រដាសប្រឡងចូលបន្ទប់?</div>
+        <div class="inline-r">
+          <label><input type="radio" name="q1" value="បាន"> បាន</label>
+          <label><input type="radio" name="q1" value="មិនបាន"> មិនបាន</label>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="q-lbl">- តើអ្នករក្រោងអានបញ្ជីឈ្មោះ និងឆ្លើយតបការប្រឡងដើម្បីពិនិត្យ​បេក្ខជន?</div>
+        <div class="inline-r">
+          <label><input type="radio" name="q2" value="បាន"> បាន</label>
+          <label><input type="radio" name="q2" value="មិនបាន"> មិនបាន</label>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="q-lbl">- តើអ្នករក្រោងបា្រប់ smartphone, Smart watch... ក្នុងបន្ទប់ប្រឡង?</div>
+        <div class="inline-r" style="flex-direction:column">
+          <label><input type="radio" name="q3" value="បានប្រើ"> បានប្រើ</label>
+          <label><input type="radio" name="q3" value="បានយកមកតែមិនប្រើ"> បានយកមកតែមិនប្រើ</label>
+          <label><input type="radio" name="q3" value="មិនបានយក"> មិនបានយក</label>
+        </div>
+      </div>
+
+      <hr class="div">
+      <div class="stats-row">
+        <div class="stat-box"><label>សរុបបេក្ខជន</label><input type="number" id="tstu" placeholder="0" min="0"></div>
+        <div class="stat-box"><label>អវត្តមានសរុប</label><input type="number" id="tabs" placeholder="0" min="0" readonly style="background:var(--blue-l)"></div>
+        <div class="stat-box"><label>អវត្តមានស្រី</label><input type="number" id="tfem" placeholder="0" min="0"></div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span class="flabel" style="margin:0">បញ្ជីអវត្តមាន</span>
+        <button class="btn btn-o btn-sm" onclick="addAbsent()">+ បន្ថែម</button>
+      </div>
+      <div id="abs-list"></div>
+    </div>
+
+    <!-- Section II -->
+    <div class="card">
+      <div class="sec-title">II. ចំណុចកត់សម្គាល់</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:13px;color:var(--muted)">ករណីពិសេស ឬការកត់សម្គាល់</span>
+        <button class="btn btn-o btn-sm" onclick="addObs()">+ បន្ថែម</button>
+      </div>
+      <div id="obs-list"></div>
+    </div>
+
+    <!-- Section III -->
+    <div class="card">
+      <div class="sec-title">III. បញ្ហាផ្សេងៗ</div>
+      <div class="fg"><textarea id="issues" placeholder="សរសេររៀបរាប់..." rows="4"></textarea></div>
+      <div class="fg">
+        <div class="q-lbl">វាយតម្លៃដំណើរការប្រឡងជារួម</div>
+        <div class="inline-r">
+          <label><input type="radio" name="q4" value="ល្អ"> ១/ ល្អ</label>
+          <label><input type="radio" name="q4" value="មធ្យម"> ២/ មធ្យម</label>
+          <label><input type="radio" name="q4" value="ខ្សោយ"> ៣/ ខ្សោយ</label>
+        </div>
+      </div>
+      <div class="note">NB: សូមចុចប៊ូតុងខាងក្រោម និងរង់ចាំដំណឹងបញ្ជាក់ ដើម្បីបញ្ជាក់ថាការបញ្ជូនបានជោគជ័យ។</div>
+    </div>
+
+    <div style="padding-bottom:24px">
+      <button class="btn btn-p" onclick="submitReport()">
+        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+        រក្សាទុករបាយការណ៍
+      </button>
+    </div>
+
+    <div class="card">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:7px;display:flex;align-items:center;gap:5px">
+        <svg width="14" height="14" fill="#0088CC" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+        ទំនាក់ទំនងជាមួយ (Telegram)
+      </div>
+      <div class="tg-contacts" id="tg-contacts"></div>
+    </div>
+  </div>
+
+  <!-- ══════════ DASHBOARD TAB ══════════ -->
+  <div id="tab-dashboard" class="tab-content">
+
+    <!-- Login -->
+    <div id="admin-login">
+      <div class="lock">🔐</div>
+      <h3 style="font-size:18px;font-weight:700">Admin Dashboard</h3>
+      <p style="font-size:13px;color:var(--muted);text-align:center">សូមបញ្ចូល Password ដើម្បីចូលប្រើ</p>
+      <div style="width:100%;max-width:300px">
+        <input type="password" id="apass" placeholder="Password" style="margin-bottom:9px;text-align:center;font-size:16px;letter-spacing:2px" onkeydown="if(event.key==='Enter')adminLogin()">
+        <button class="btn btn-p" onclick="adminLogin()">ចូលប្រើប្រាស់</button>
+      </div>
+    </div>
+
+    <!-- Admin panel -->
+    <div id="admin-panel">
+
+      <!-- Sub-tabs -->
+      <div class="settings-tab-bar">
+        <button class="stab active" onclick="switchAdminTab('reports',this)">📋 របាយការណ៍</button>
+        <button class="stab" onclick="switchAdminTab('settings',this)">⚙️ Settings</button>
+      </div>
+
+      <!-- Reports sub-tab -->
+      <div id="atab-reports">
+        <div class="sum-grid">
+          <div class="sum-card"><div class="val" id="s-rooms">-</div><div class="lbl">បន្ទប់ submit</div></div>
+          <div class="sum-card"><div class="val" id="s-stu">-</div><div class="lbl">បេក្ខជនសរុប</div></div>
+          <div class="sum-card"><div class="val" id="s-abs">-</div><div class="lbl">អវត្តមានសរុប</div></div>
+          <div class="sum-card"><div class="val" id="s-fem">-</div><div class="lbl">អវត្តមានស្រី</div></div>
+        </div>
+
+        <div class="filter-row" id="filter-row">
+          <div class="chip active" onclick="filterData('all',this)">ទាំងអស់</div>
+        </div>
+
+        <div class="action-row">
+          <button class="btn btn-success" onclick="exportCSV()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export CSV
+          </button>
+          <button class="btn btn-danger" onclick="confirmClear()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14a2 2 0 01-2,2H8a2 2 0 01-2-2L5,6"/></svg>
+            Clear
+          </button>
+          <button class="btn btn-o" onclick="loadDashboard()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="23,4 23,10 17,10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+            Refresh
+          </button>
+        </div>
+
+        <div id="reports-list"></div>
+        <div id="empty-state" style="display:none;text-align:center;padding:36px 20px;color:var(--muted)">
+          <div style="font-size:38px">📭</div>
+          <div style="margin-top:7px;font-size:13px;font-weight:700">មិនទាន់មានរបាយការណ៍</div>
+        </div>
+      </div>
+
+      <!-- Settings sub-tab -->
+      <div id="atab-settings" style="display:none">
+        <div class="card">
+          <div class="sec-title">កែ Settings</div>
+
+          <div class="fg">
+            <label class="flabel">ចំណងជើងទី១ (Title 1)</label>
+            <textarea id="st-title1" rows="2" placeholder="ចំណងជើងការប្រឡង..."></textarea>
+          </div>
+          <div class="fg">
+            <label class="flabel">ចំណងជើងទី២ (Title 2)</label>
+            <textarea id="st-title2" rows="2" placeholder="ចំណងជើងបន្ថែម..."></textarea>
+          </div>
+          <div class="fg">
+            <label class="flabel">មណ្ឌលប្រឡង (Centers)</label>
+            <div class="tag-wrap" id="tw-centers" onclick="focusTagInput('ti-centers')">
+              <input class="tag-input" id="ti-centers" placeholder="វាយ Enter ដើម្បីបន្ថែម..." onkeydown="tagKeydown(event,'centers')">
+            </div>
+          </div>
+          <div class="fg">
+            <label class="flabel">សម័យប្រឡង (Sessions)</label>
+            <div class="tag-wrap" id="tw-sessions" onclick="focusTagInput('ti-sessions')">
+              <input class="tag-input" id="ti-sessions" placeholder="វាយ Enter ដើម្បីបន្ថែម..." onkeydown="tagKeydown(event,'sessions')">
+            </div>
+          </div>
+          <div class="fg">
+            <label class="flabel">វិញ្ញាសា (Subjects)</label>
+            <div class="tag-wrap" id="tw-subjects" onclick="focusTagInput('ti-subjects')">
+              <input class="tag-input" id="ti-subjects" placeholder="វាយ Enter ដើម្បីបន្ថែម..." onkeydown="tagKeydown(event,'subjects')">
+            </div>
+          </div>
+          <div class="fg">
+            <label class="flabel">Telegram Contact (comma separated)</label>
+            <input type="text" id="st-tg" placeholder="@username,+855xxx">
+          </div>
+
+          <button class="btn btn-p" onclick="saveSettings()">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>
+            រក្សាទុក Settings
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /admin-panel -->
+  </div><!-- /tab-dashboard -->
+</div><!-- /app -->
+
+<script>
+// ══════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════
+const GAS_URL = "https://script.google.com/macros/s/AKfycbw9Yh_qoWSoVjpcotVCWePF0GOc80omJRYPGJCI6dzAZ69zmEJe5_QpAK11VBkiNJ37/exec";
+
+// ── Telegram ──
+const tgApp    = window.Telegram?.WebApp;
+const TG_ID    = tgApp?.initDataUnsafe?.user?.id?.toString() || "dev_" + Date.now();
+
+// ── State ──
+let settings     = {};
+let allReports   = [];
+let adminPwd     = "";
+let absIdx       = 0;
+let obsIdx       = 0;
+let activeFilter = "all";
+
+// ── Tag state (for settings editor) ──
+const tagState = { centers:[], sessions:[], subjects:[] };
+
+// ══════════════════════════════════════════════
+// OFFLINE / PENDING QUEUE
+// ══════════════════════════════════════════════
+const PENDING_KEY = "examPendingQueue";
+
+function getPending() {
+  try { return JSON.parse(localStorage.getItem(PENDING_KEY) || "[]"); } catch { return []; }
+}
+function savePending(q) {
+  localStorage.setItem(PENDING_KEY, JSON.stringify(q));
+}
+function addPending(payload) {
+  const q = getPending();
+  // Replace if same key exists
+  const key = makeKey(payload);
+  const idx = q.findIndex(p => makeKey(p) === key);
+  if (idx !== -1) q.splice(idx, 1);
+  q.push({ ...payload, _queuedAt: Date.now() });
+  savePending(q);
+  updatePendingBadge();
+}
+function makeKey(p) {
+  return [p.telegram_id, p.room_no, p.sessions, p.subjects].join("|");
+}
+function updatePendingBadge() {
+  const n = getPending().length;
+  document.querySelectorAll("[data-tab='form'] .pending-badge").forEach(b => b.remove());
+  if (n > 0) {
+    const btn = document.querySelector("[data-tab='form']");
+    if (btn) btn.innerHTML = `📝 របាយការណ៍<span class="pending-badge">${n}</span>`;
+  } else {
+    const btn = document.querySelector("[data-tab='form']");
+    if (btn) btn.textContent = "📝 របាយការណ៍";
+  }
+}
+
+async function retryPending() {
+  const q = getPending();
+  if (!q.length) return;
+  showLoading(true);
+  let sent = 0;
+  const remaining = [];
+  for (const payload of q) {
+    try {
+      const res = await postGAS(payload);
+      if (res.status === "ok" || res.status === "error" && res.code === 409) {
+        sent++;
+        showToast(res.message || "Synced!", "success");
+      } else {
+        remaining.push(payload);
+      }
+    } catch {
+      remaining.push(payload);
+    }
+  }
+  savePending(remaining);
+  updatePendingBadge();
+  showLoading(false);
+  if (sent > 0) showToast(`Sync ${sent} របាយការណ៍ដោយជោគជ័យ!`, "success");
+}
+
+// Network listeners
+function setOfflineUI(offline) {
+  const bar = document.getElementById("offline-bar");
+  if (offline) bar.classList.add("show");
+  else { bar.classList.remove("show"); retryPending(); }
+}
+window.addEventListener("online",  () => setOfflineUI(false));
+window.addEventListener("offline", () => setOfflineUI(true));
+if (!navigator.onLine) setOfflineUI(true);
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+window.addEventListener("load", async () => {
+  if (tgApp) { tgApp.ready(); tgApp.expand(); }
+  updatePendingBadge();
+  await loadSettings();
+  await checkMyDraft();
+});
+
+async function loadSettings() {
+  showLoading(true);
+  try {
+    const r = await fetch(GAS_URL + "?action=settings");
+    settings = await r.json();
+    renderSettings();
+  } catch(e) {
+    showToast("មិនអាចភ្ជាប់ Server", "error");
+  }
+  showLoading(false);
+}
+
+function renderSettings() {
+  document.getElementById("bn-t1").textContent = settings.title1 || "";
+  document.getElementById("bn-t2").textContent = settings.title2 || "";
+
+  // Title pills
+  const tg = document.getElementById("title-grp");
+  tg.innerHTML = "";
+  const titles = [settings.title1, ...(settings.title2||"").split(",").map(x=>x.trim())].filter(Boolean);
+  titles.forEach((t,i) => {
+    tg.innerHTML += `<label class="pill"><input type="radio" name="title" value="${t}" ${i===0?"checked":""}><span style="font-size:11px">${t.length>50?t.slice(0,50)+"...":t}</span></label>`;
+  });
+
+  // Session pills
+  const sg = document.getElementById("session-grp");
+  sg.innerHTML = "";
+  (settings.sessions||[]).forEach((s,i) => {
+    sg.innerHTML += `<label class="pill"><input type="radio" name="sess" value="${s}" ${i===0?"checked":""}>${s}</label>`;
+  });
+
+  // Center pills
+  const cg = document.getElementById("center-grp");
+  cg.innerHTML = "";
+  (settings.centers||[]).forEach((c,i) => {
+    cg.innerHTML += `<label class="pill"><input type="radio" name="center" value="${c}" ${i===0?"checked":""}>${c}</label>`;
+  });
+
+  // Subject checkboxes
+  const subg = document.getElementById("subject-grp");
+  subg.innerHTML = "";
+  (settings.subjects||[]).forEach(s => {
+    subg.innerHTML += `<label class="pill"><input type="checkbox" name="subj" value="${s}">${s}</label>`;
+  });
+
+  // TG contacts
+  const tgc = document.getElementById("tg-contacts");
+  tgc.innerHTML = "";
+  (settings.telegram_contact||"").split(",").forEach(c => {
+    c = c.trim(); if (!c) return;
+    const url = c.startsWith("+") ? `https://t.me/${c.replace("+","")}` : `https://t.me/${c.replace("@","")}`;
+    tgc.innerHTML += `<a class="tg-btn" href="${url}" target="_blank">
+      <div class="tg-ico"><svg width="11" height="11" fill="#0088CC" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg></div>
+      ${c}
+    </a>`;
+  });
+}
+
+// ══════════════════════════════════════════════
+// CHECK EXISTING DRAFT / REPORT (prefill)
+// ══════════════════════════════════════════════
+async function checkMyDraft() {
+  // Check pending queue first
+  const q = getPending();
+  if (q.length > 0) {
+    const latest = q[q.length - 1];
+    prefillForm(latest);
+    showToast("ទិន្នន័យ draft ត្រូវបានផ្ទុក — ចុច Submit ដើម្បី sync", "warn");
+    return;
+  }
+}
+
+async function checkServerReport(room, sess, subj) {
+  if (!navigator.onLine) return null;
+  try {
+    const r = await postGAS({ action:"getMyReport", telegram_id:TG_ID, room_no:room, sessions:sess, subjects:subj });
+    return r;
+  } catch { return null; }
+}
+
+function prefillForm(d) {
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v||""; };
+  set("fn", d.first_name); set("ln", d.last_name);
+  set("phone", d.phone); set("building", d.building);
+  set("room", d.room_no); set("iv1", d.invig1); set("iv2", d.invig2);
+  set("st", d.start_time); set("et", d.end_time);
+  set("tstu", d.total_stu); set("tabs", d.total_abs); set("tfem", d.total_female);
+  set("issues", d.other_issues);
+
+  const setRadio = (name, val) => {
+    const el = document.querySelector(`input[name="${name}"][value="${val}"]`);
+    if (el) el.checked = true;
+  };
+  setRadio("title", d.title); setRadio("sess", d.sessions);
+  setRadio("center", d.centers); setRadio("q1", d.q1);
+  setRadio("q2", d.q2); setRadio("q3", d.q3); setRadio("q4", d.q4);
+
+  // Subject checkbox
+  (d.subjects||"").split(",").forEach(s => {
+    const el = document.querySelector(`input[name="subj"][value="${s.trim()}"]`);
+    if (el) el.checked = true;
+  });
+
+  // Absent list
+  document.getElementById("abs-list").innerHTML = "";
+  absIdx = 0;
+  (Array.isArray(d.absent_list) ? d.absent_list : []).forEach(a => addAbsent(a));
+
+  // Observation list
+  document.getElementById("obs-list").innerHTML = "";
+  obsIdx = 0;
+  (Array.isArray(d.observation_list) ? d.observation_list : []).forEach(o => addObs(o));
+}
+
+// ══════════════════════════════════════════════
+// FORM LOGIC
+// ══════════════════════════════════════════════
+function addAbsent(prefill) {
+  absIdx++;
+  const id = "abs-" + absIdx;
+  const d = document.createElement("div");
+  d.className = "dyn-item"; d.id = id;
+  d.innerHTML = `
+    <div class="inum">ល.រ ${absIdx}</div>
+    <button class="rm" onclick="removeItem('${id}');syncAbsCount()">✕</button>
+    <div class="row2" style="margin-bottom:7px">
+      <input type="text" placeholder="លេខចុះឈ្មោះ" class="abs-no" value="${prefill?.no||''}">
+      <select class="abs-gender">
+        <option value="ប្រុស" ${prefill?.gender==='ប្រុស'?'selected':''}>ប្រុស</option>
+        <option value="ស្រី"  ${prefill?.gender==='ស្រី'?'selected':''}>ស្រី</option>
+      </select>
+    </div>
+    <input type="text" placeholder="ឈ្មោះបេក្ខជន" class="abs-name" value="${prefill?.name||''}" style="width:100%">
+  `;
+  document.getElementById("abs-list").appendChild(d);
+  syncAbsCount();
+}
+
+function addObs(prefill) {
+  obsIdx++;
+  const id = "obs-" + obsIdx;
+  const d = document.createElement("div");
+  d.className = "dyn-item"; d.id = id;
+  d.innerHTML = `
+    <div class="inum">ល.រ ${obsIdx}</div>
+    <button class="rm" onclick="removeItem('${id}')">✕</button>
+    <input type="text" placeholder="ឈ្មោះបេក្ខជន" class="obs-name" value="${prefill?.name||''}" style="width:100%;margin-bottom:7px">
+    <div class="row2" style="margin-bottom:7px">
+      <input type="text" placeholder="លេខចុះឈ្មោះ" class="obs-no" value="${prefill?.no||''}">
+      <input type="text" placeholder="ចំណុចកត់សម្គាល់" class="obs-note" value="${prefill?.note||''}">
+    </div>
+    <input type="text" placeholder="ចំណាត់ការ" class="obs-action" value="${prefill?.action||''}" style="width:100%">
+  `;
+  document.getElementById("obs-list").appendChild(d);
+}
+
+function removeItem(id) { const el = document.getElementById(id); if(el) el.remove(); syncAbsCount(); }
+
+function syncAbsCount() {
+  const count = document.querySelectorAll("#abs-list .dyn-item").length;
+  document.getElementById("tabs").value = count || "";
+}
+
+function collectForm() {
+  const v  = id => document.getElementById(id)?.value?.trim() || "";
+  const rv = name => document.querySelector(`input[name="${name}"]:checked`)?.value || "";
+  const cv = name => [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(i=>i.value).join(",");
+
+  const absent = [...document.querySelectorAll("#abs-list .dyn-item")].map(el => ({
+    no:el.querySelector(".abs-no")?.value||"",
+    name:el.querySelector(".abs-name")?.value||"",
+    gender:el.querySelector(".abs-gender")?.value||""
+  }));
+  const observations = [...document.querySelectorAll("#obs-list .dyn-item")].map(el => ({
+    name:el.querySelector(".obs-name")?.value||"",
+    no:el.querySelector(".obs-no")?.value||"",
+    note:el.querySelector(".obs-note")?.value||"",
+    action:el.querySelector(".obs-action")?.value||""
+  }));
+
+  return {
+    title:rv("title"), first_name:v("fn"), last_name:v("ln"),
+    phone:v("phone"), room_no:v("room"), building:v("building"),
+    sessions:rv("sess"), centers:rv("center"), subjects:cv("subj"),
+    start_time:v("st"), end_time:v("et"),
+    q1:rv("q1"), q2:rv("q2"), q3:rv("q3"), q4:rv("q4"),
+    invig1:v("iv1"), invig2:v("iv2"),
+    total_stu:v("tstu"), total_abs:v("tabs"), total_female:v("tfem"),
+    absent_list:absent, observation_list:observations,
+    other_issues:v("issues"), overall_rating:rv("q4"),
+    telegram_id:TG_ID
+  };
+}
+
+function validate(d) {
+  if (!d.first_name || !d.last_name) return "សូមបញ្ចូលឈ្មោះ";
+  if (!d.room_no)   return "សូមបញ្ចូលលេខបន្ទប់";
+  if (!d.sessions)  return "សូមជ្រើសសម័យប្រឡង";
+  if (!d.centers)   return "សូមជ្រើសមណ្ឌល";
+  if (!d.subjects)  return "សូមជ្រើសវិញ្ញាសា";
+  return null;
+}
+
+async function submitReport() {
+  const data = collectForm();
+  const er = validate(data);
+  if (er) { showToast(er, "error"); return; }
+
+  // OFFLINE → queue it
+  if (!navigator.onLine) {
+    data.action = "submit";
+    addPending(data);
+    showToast("គ្មាន Internet — ទិន្នន័យបានរក្សាទុក នឹង Sync ដោយស្វ័យប្រវត្តិ!", "warn");
+    return;
+  }
+
+  showLoading(true);
+  try {
+    // Check existing record on server
+    const check = await postGAS({ action:"getMyReport", telegram_id:TG_ID, room_no:data.room_no, sessions:data.sessions, subjects:data.subjects });
+    const action = check.found ? "edit" : "submit";
+
+    if (check.found && !check.editable) {
+      showToast("ម៉ោងប្រឡងបញ្ចប់ហើយ។ មិនអាចកែបានទៀតទេ។", "error");
+      showLoading(false); return;
+    }
+
+    const res = await postGAS({ action, ...data });
+    if (res.status === "ok") {
+      showToast(res.message || "បានរក្សាទុក!", "success");
+      // Remove from pending if it was there
+      const q = getPending().filter(p => makeKey(p) !== makeKey(data));
+      savePending(q);
+      updatePendingBadge();
+      if (tgApp) tgApp.HapticFeedback?.notificationOccurred("success");
+    } else {
+      showToast(res.message || "មានបញ្ហា", "error");
+    }
+  } catch(e) {
+    // Network failed mid-request → queue
+    data.action = "submit";
+    addPending(data);
+    showToast("Network error — ទិន្នន័យបានរក្សាទុក នឹង Sync ដោយស្វ័យប្រវត្តិ!", "warn");
+  }
+  showLoading(false);
+}
+
+// ══════════════════════════════════════════════
+// ADMIN
+// ══════════════════════════════════════════════
+async function adminLogin() {
+  const p = document.getElementById("apass").value;
+  if (!p) { showToast("សូមបញ្ចូល Password", "error"); return; }
+  adminPwd = p;
+  await loadDashboard();
+}
+
+async function loadDashboard() {
+  showLoading(true);
+  try {
+    const r = await fetch(GAS_URL + "?action=getReports&password=" + encodeURIComponent(adminPwd));
+    const d = await r.json();
+    if (d.status === "error") { showToast(d.message || "Password មិនត្រឹមត្រូវ", "error"); showLoading(false); return; }
+    document.getElementById("admin-login").style.display = "none";
+    document.getElementById("admin-panel").style.display = "block";
+    allReports = d.rows || [];
+    buildFilters();
+    renderReports(allReports);
+  } catch(e) { showToast("Error: "+e.message, "error"); }
+  showLoading(false);
+}
+
+function buildFilters() {
+  const row = document.getElementById("filter-row");
+  const sessions = [...new Set(allReports.map(r=>r.sessions))].filter(Boolean);
+  const centers  = [...new Set(allReports.map(r=>r.centers))].filter(Boolean);
+  const subjects = [...new Set(allReports.map(r=>r.subjects))].filter(Boolean);
+  row.innerHTML = `<div class="chip active" onclick="filterData('all',this)">ទាំងអស់</div>`;
+  sessions.forEach(s => row.innerHTML += `<div class="chip" onclick="filterData('s:${s}',this)">${s}</div>`);
+  centers.forEach(c  => row.innerHTML += `<div class="chip" onclick="filterData('c:${c}',this)">${c}</div>`);
+  subjects.forEach(s => row.innerHTML += `<div class="chip" onclick="filterData('x:${s}',this)">${s}</div>`);
+}
+
+function filterData(key, el) {
+  document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+  el.classList.add("active");
+  activeFilter = key;
+  let rows = allReports;
+  if (key !== "all") {
+    const [t,v] = key.split(":");
+    if (t==="s") rows = allReports.filter(r=>r.sessions===v);
+    if (t==="c") rows = allReports.filter(r=>r.centers===v);
+    if (t==="x") rows = allReports.filter(r=>r.subjects===v);
+  }
+  renderReports(rows);
+}
+
+function renderReports(rows) {
+  const sum = (f) => rows.reduce((s,r)=>s+(parseInt(r[f])||0),0);
+  document.getElementById("s-rooms").textContent = rows.length;
+  document.getElementById("s-stu").textContent   = sum("total_stu");
+  document.getElementById("s-abs").textContent   = sum("total_abs");
+  document.getElementById("s-fem").textContent   = sum("total_female");
+
+  const list  = document.getElementById("reports-list");
+  const empty = document.getElementById("empty-state");
+  list.innerHTML = "";
+  if (!rows.length) { empty.style.display="block"; return; }
+  empty.style.display = "none";
+
+  const rb = r => r==="ល្អ"?`<span class="badge b-l">ល្អ</span>`:r==="មធ្យម"?`<span class="badge b-m">មធ្យម</span>`:r==="ខ្សោយ"?`<span class="badge b-h">ខ្សោយ</span>`:"";
+
+  rows.forEach(r => {
+    const name = [r.first_name,r.last_name].filter(Boolean).join(" ");
+    list.innerHTML += `
+      <div class="ri">
+        <div class="ri-hd">
+          <span class="ri-room">បន្ទប់ ${r.room_no}${r.building?" ("+r.building+")":""}</span>
+          <span class="ri-sub">${r.subjects||""}</span>
+        </div>
+        <div class="ri-meta"><span>📍${r.centers||""}</span><span>📅${r.sessions||""}</span><span>⏱${r.start_time||""}–${r.end_time||""}</span></div>
+        <div class="ri-meta" style="margin-top:3px"><span>👤${name}</span><span>${rb(r.overall_rating)}</span></div>
+        <div class="ri-stats">
+          <span class="ri-stat">👥${r.total_stu||0}</span>
+          <span class="ri-stat">❌${r.total_abs||0}</span>
+          <span class="ri-stat">♀${r.total_female||0}</span>
+        </div>
+      </div>`;
+  });
+}
+
+// ── Settings editor ──
+function switchAdminTab(tab, el) {
+  document.querySelectorAll(".stab").forEach(b=>b.classList.remove("active"));
+  el.classList.add("active");
+  document.getElementById("atab-reports").style.display  = tab==="reports"  ? "block":"none";
+  document.getElementById("atab-settings").style.display = tab==="settings" ? "block":"none";
+  if (tab==="settings") loadSettingsIntoEditor();
+}
+
+function loadSettingsIntoEditor() {
+  document.getElementById("st-title1").value = settings.title1 || "";
+  document.getElementById("st-title2").value = settings.title2 || "";
+  document.getElementById("st-tg").value     = settings.telegram_contact || "";
+  loadTags("centers",  settings.centers  || []);
+  loadTags("sessions", settings.sessions || []);
+  loadTags("subjects", settings.subjects || []);
+}
+
+function loadTags(key, arr) {
+  tagState[key] = [...arr];
+  renderTags(key);
+}
+
+function renderTags(key) {
+  const wrap = document.getElementById("tw-"+key);
+  const inp  = document.getElementById("ti-"+key);
+  wrap.querySelectorAll(".tag").forEach(t=>t.remove());
+  tagState[key].forEach((val,i) => {
+    const tag = document.createElement("div");
+    tag.className = "tag";
+    tag.innerHTML = `<span>${val}</span><span class="tx" onclick="removeTag('${key}',${i})">×</span>`;
+    wrap.insertBefore(tag, inp);
+  });
+}
+
+function focusTagInput(id) { document.getElementById(id)?.focus(); }
+
+function tagKeydown(e, key) {
+  if (e.key === "Enter" || e.key === ",") {
+    e.preventDefault();
+    const val = e.target.value.trim().replace(/,$/,"");
+    if (val && !tagState[key].includes(val)) {
+      tagState[key].push(val);
+      renderTags(key);
+    }
+    e.target.value = "";
+  }
+  if (e.key === "Backspace" && !e.target.value && tagState[key].length) {
+    tagState[key].pop();
+    renderTags(key);
+  }
+}
+
+function removeTag(key, idx) { tagState[key].splice(idx,1); renderTags(key); }
+
+async function saveSettings() {
+  const payload = {
+    action   : "updateSettings",
+    password : adminPwd,
+    title1   : document.getElementById("st-title1").value.trim(),
+    title2   : document.getElementById("st-title2").value.trim(),
+    centers  : tagState.centers,
+    sessions : tagState.sessions,
+    subjects : tagState.subjects,
+    telegram_contact: document.getElementById("st-tg").value.trim()
+  };
+  showLoading(true);
+  try {
+    const r = await postGAS(payload);
+    if (r.status === "ok") {
+      showToast(r.message || "Settings saved!", "success");
+      // Update local settings & re-render form
+      settings.title1   = payload.title1;
+      settings.title2   = payload.title2;
+      settings.centers  = payload.centers;
+      settings.sessions = payload.sessions;
+      settings.subjects = payload.subjects;
+      settings.telegram_contact = payload.telegram_contact;
+      renderSettings();
+    } else {
+      showToast(r.message || "Error", "error");
+    }
+  } catch(e) { showToast("Error: "+e.message,"error"); }
+  showLoading(false);
+}
+
+// ── Export CSV ──
+function exportCSV() {
+  if (!allReports.length) { showToast("មិនមានទិន្នន័យ","error"); return; }
+  let rows = allReports;
+  if (activeFilter !== "all") {
+    const [t,v] = activeFilter.split(":");
+    if (t==="s") rows = allReports.filter(r=>r.sessions===v);
+    if (t==="c") rows = allReports.filter(r=>r.centers===v);
+    if (t==="x") rows = allReports.filter(r=>r.subjects===v);
+  }
+  const headers = Object.keys(rows[0]);
+  const csv = [headers.join(","), ...rows.map(r=>headers.map(h=>`"${String(r[h]||"").replace(/"/g,'""')}"`).join(","))].join("\n");
+  const blob = new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "exam_report_"+new Date().toISOString().slice(0,10)+".csv";
+  a.click();
+}
+
+// ── Clear ──
+async function confirmClear() {
+  if (!confirm("⚠️ តើប្រាកដជាចង់លុបទិន្នន័យទាំងអស់?\nBackup នឹងត្រូវធ្វើដោយស្វ័យប្រវត្តិ។")) return;
+  showLoading(true);
+  try {
+    const r = await postGAS({ action:"clearData", password:adminPwd });
+    showToast(r.message||"Done!","success");
+    allReports = [];
+    renderReports([]);
+  } catch(e) { showToast("Error: "+e.message,"error"); }
+  showLoading(false);
+}
+
+// ══════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════
+function switchTab(tab, el) {
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".tab-content").forEach(c=>c.classList.remove("active"));
+  document.getElementById("tab-"+tab).classList.add("active");
+  el.classList.add("active");
+}
+
+async function postGAS(body) {
+  const r = await fetch(GAS_URL, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(body)
+  });
+  return r.json();
+}
+
+function showToast(msg, type="") {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "show "+(type||"");
+  clearTimeout(t._t);
+  t._t = setTimeout(()=>{t.className="";},3800);
+}
+
+function showLoading(show) {
+  document.getElementById("loading").className = show?"show":"";
+}
+</script>
+</body>
+</html>
