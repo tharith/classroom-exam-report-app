@@ -186,7 +186,7 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
   <div class="tab-bar">
     <button class="tab-btn active" data-tab="form" onclick="switchTab('form',this)">📝 របាយការណ៍</button>
     <button class="tab-btn" data-tab="myreports" onclick="switchTab('myreports',this)">📋 របស់ខ្ញុំ</button>
-    <button class="tab-btn" data-tab="dashboard" onclick="switchTab('dashboard',this)">📊 គ្រប់គ្រង</button>
+    <button class="tab-btn" data-tab="dashboard" id="admin-tab-btn" onclick="switchTab('dashboard',this)" style="display:none">📊 គ្រប់គ្រង</button>
   </div>
 
   <!-- Offline bar -->
@@ -479,6 +479,17 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
             <input type="text" id="st-tg" placeholder="@username,+855xxx">
           </div>
           <div class="fg">
+            <label class="flabel">Telegram Reporter IDs
+              <span style="font-weight:400;color:var(--muted)"> — អ្នកដែលឃើញ Dashboard</span>
+            </label>
+            <div class="tag-wrap" id="tw-reporter-ids" onclick="focusTagInput('ti-reporter-ids')">
+              <input class="tag-input" id="ti-reporter-ids" placeholder="វាយ Telegram ID + Enter (e.g. 123456789)..." onkeydown="tagKeydown(event,'reporter_ids')">
+            </div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">
+              💡 Telegram ID របស់អ្នក: <strong id="my-tg-id-display"></strong>
+            </div>
+          </div>
+          <div class="fg">
             <label class="flabel">បន្ថែមម៉ោង Edit បន្ទាប់ End Time (នាទី) <span style="color:var(--muted);font-weight:400">default = 0</span></label>
             <input type="number" id="st-addtime" placeholder="0" min="0" max="120">
           </div>
@@ -498,7 +509,7 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
 // ══════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════
-const GAS_URL = "https://script.google.com/macros/s/AKfycbw9Yh_qoWSoVjpcotVCWePF0GOc80omJRYPGJCI6dzAZ69zmEJe5_QpAK11VBkiNJ37/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbw9Yh_qoWSoVjpcotVCWePF0GOc80omJRYPGJCI6dzAZ69zmEJe5_QpAK11VBkiNJ37/exec"; // ← ប្តូរ
 
 // ── Telegram ──
 const tgApp    = window.Telegram?.WebApp;
@@ -513,7 +524,7 @@ let obsIdx       = 0;
 let activeFilter = "all";
 
 // ── Tag state (for settings editor) ──
-const tagState = { centers:[], sessions:[], subjects:[] };
+const tagState = { centers:[], sessions:[], subjects:[], reporter_ids:[] };
 
 // ══════════════════════════════════════════════
 // OFFLINE / PENDING QUEUE
@@ -591,10 +602,37 @@ if (!navigator.onLine) setOfflineUI(true);
 // ══════════════════════════════════════════════
 window.addEventListener("load", async () => {
   if (tgApp) { tgApp.ready(); tgApp.expand(); }
+
+  // Show current TG ID in settings editor (helper for admin)
+  const myIdEl = document.getElementById("my-tg-id-display");
+  if (myIdEl) myIdEl.textContent = TG_ID;
+
+  // Hash-based fallback (manual #admin URL)
+  window.addEventListener("hashchange", checkAdminAccess);
+
   updatePendingBadge();
-  await loadSettings();
+  await loadSettings(); // after this, checkAdminAccess runs inside renderSettings
   await checkMyDraft();
 });
+
+function checkAdminAccess() {
+  // Allow via #admin hash OR telegram_reporter_id match
+  const reporterIds = (settings.reporter_ids || []).map(id => String(id).trim());
+  const isReporter  = reporterIds.includes(String(TG_ID));
+  const isHashAdmin = window.location.hash === "#admin";
+  const isAdmin     = isReporter || isHashAdmin;
+
+  const adminBtn = document.getElementById("admin-tab-btn");
+  if (adminBtn) adminBtn.style.display = isAdmin ? "" : "none";
+
+  // If access revoked while on dashboard → go back to form
+  if (!isAdmin) {
+    const dashTab = document.getElementById("tab-dashboard");
+    if (dashTab && dashTab.classList.contains("active")) {
+      switchTab("form", document.querySelector("[data-tab='form']"));
+    }
+  }
+}
 
 async function loadSettings() {
   showLoading(true);
@@ -602,6 +640,7 @@ async function loadSettings() {
     const r = await fetch(GAS_URL + "?action=settings");
     settings = await r.json();
     renderSettings();
+    checkAdminAccess(); // check after settings loaded (reporter_ids available)
   } catch(e) {
     showToast("មិនអាចភ្ជាប់ Server", "error");
   }
@@ -1009,9 +1048,10 @@ function loadSettingsIntoEditor() {
   document.getElementById("st-title2").value   = settings.title2 || "";
   document.getElementById("st-tg").value       = settings.telegram_contact || "";
   document.getElementById("st-addtime").value  = settings.additional_time ?? 0;
-  loadTags("centers",  settings.centers  || []);
-  loadTags("sessions", settings.sessions || []);
-  loadTags("subjects", settings.subjects || []);
+  loadTags("centers",      settings.centers      || []);
+  loadTags("sessions",     settings.sessions     || []);
+  loadTags("subjects",     settings.subjects     || []);
+  loadTags("reporter_ids", settings.reporter_ids || []);
 }
 
 function loadTags(key, arr) {
@@ -1060,22 +1100,25 @@ async function saveSettings() {
     centers  : tagState.centers,
     sessions : tagState.sessions,
     subjects : tagState.subjects,
-    telegram_contact: document.getElementById("st-tg").value.trim(),
-    additional_time : parseInt(document.getElementById("st-addtime").value) || 0
+    telegram_contact : document.getElementById("st-tg").value.trim(),
+    additional_time  : parseInt(document.getElementById("st-addtime").value) || 0,
+    reporter_ids     : tagState.reporter_ids,
   };
   showLoading(true);
   try {
     const r = await postGAS(payload);
     if (r.status === "ok") {
       showToast(r.message || "Settings saved!", "success");
-      settings.title1   = payload.title1;
-      settings.title2   = payload.title2;
-      settings.centers  = payload.centers;
-      settings.sessions = payload.sessions;
-      settings.subjects = payload.subjects;
+      settings.title1           = payload.title1;
+      settings.title2           = payload.title2;
+      settings.centers          = payload.centers;
+      settings.sessions         = payload.sessions;
+      settings.subjects         = payload.subjects;
       settings.telegram_contact = payload.telegram_contact;
       settings.additional_time  = payload.additional_time;
+      settings.reporter_ids     = payload.reporter_ids;
       renderSettings();
+      checkAdminAccess(); // re-evaluate tab visibility after reporter_ids change
     } else {
       showToast(r.message || "Error", "error");
     }
