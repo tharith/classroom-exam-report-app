@@ -234,25 +234,32 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
       </div>
 
       <div class="fg">
-        <div class="q-lbl">- តើអ្នករក្រោងបានដឹកជម្រុញអ្នករៀនចូលអង្គុយ និងចែករំលែកឯកសារ/ក្រដាសប្រឡងចូលបន្ទប់?</div>
-        <div class="inline-r">
+        <div class="q-lbl">- តើអ្នករក្រោងបានដឹកជម្រុញអ្នករៀនចូលអង្គុយ និងចែករំលែកឯកសារ/ក្រដាសប្រឡងចូលបន្ទប់ប្រឡងដើម្បីចូលបន្ទប់ប្រឡង? <span style="color:var(--red)">*</span></div>
+        <div class="inline-r" id="q1-wrap">
           <label><input type="radio" name="q1" value="បាន"> បាន</label>
           <label><input type="radio" name="q1" value="មិនបាន"> មិនបាន</label>
         </div>
       </div>
       <div class="fg">
-        <div class="q-lbl">- តើអ្នករក្រោងអានបញ្ជីឈ្មោះ និងឆ្លើយតបការប្រឡងដើម្បីពិនិត្យ​បេក្ខជន?</div>
-        <div class="inline-r">
+        <div class="q-lbl">- តើអ្នករក្រោងបានពិនិត្យកំណត់ហត្ថលេខា និងករណីឆ្លើយតបមិនប្រក្រតី និងរបស់បេក្ខជននៅតាមតុបន្ទប់ប្រឡង? <span style="color:var(--red)">*</span></div>
+        <div class="inline-r" id="q2-wrap">
           <label><input type="radio" name="q2" value="បាន"> បាន</label>
           <label><input type="radio" name="q2" value="មិនបាន"> មិនបាន</label>
         </div>
       </div>
       <div class="fg">
-        <div class="q-lbl">- តើអ្នករក្រោងបា្រប់ smartphone, Smart watch... ក្នុងបន្ទប់ប្រឡង?</div>
-        <div class="inline-r" style="flex-direction:column">
-          <label><input type="radio" name="q3" value="បានប្រើ"> បានប្រើ</label>
-          <label><input type="radio" name="q3" value="បានយកមកតែមិនប្រើ"> បានយកមកតែមិនប្រើ</label>
-          <label><input type="radio" name="q3" value="មិនបានយក"> មិនបានយក</label>
+        <div class="q-lbl">- តើអ្នករក្រោងអានបញ្ជីឈ្មោះ និងឆ្លើយតបការប្រឡង ដើម្បីពិនិត្យ​បេក្ខជននៅតាមតុបន្ទប់ប្រឡង? <span style="color:var(--red)">*</span></div>
+        <div class="inline-r" id="q3-wrap">
+          <label><input type="radio" name="q3" value="បាន"> បាន</label>
+          <label><input type="radio" name="q3" value="មិនបាន"> មិនបាន</label>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="q-lbl">- តើអ្នករក្រោងបា្រប់ smartphone, Smart watch... ក្នុងបន្ទប់ប្រឡងដែលមានប្រើ? <span style="color:var(--red)">*</span></div>
+        <div class="inline-r" id="q4-wrap" style="flex-direction:column">
+          <label><input type="radio" name="q4" value="បានប្រើ"> បានប្រើ</label>
+          <label><input type="radio" name="q4" value="បានយកមកតែមិនប្រើ"> បានយកមកតែមិនប្រើ</label>
+          <label><input type="radio" name="q4" value="មិនបានយក"> មិនបានយក</label>
         </div>
       </div>
 
@@ -285,11 +292,11 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
       <div class="sec-title">III. បញ្ហាផ្សេងៗ</div>
       <div class="fg"><textarea id="issues" placeholder="សរសេររៀបរាប់..." rows="4"></textarea></div>
       <div class="fg">
-        <div class="q-lbl">វាយតម្លៃដំណើរការប្រឡងជារួម</div>
-        <div class="inline-r">
-          <label><input type="radio" name="q4" value="ល្អ"> ១/ ល្អ</label>
-          <label><input type="radio" name="q4" value="មធ្យម"> ២/ មធ្យម</label>
-          <label><input type="radio" name="q4" value="ខ្សោយ"> ៣/ ខ្សោយ</label>
+        <div class="q-lbl">វាយតម្លៃដំណើរការប្រឡងជារួម <span style="color:var(--red)">*</span></div>
+        <div class="inline-r" id="rating-wrap">
+          <label><input type="radio" name="rating" value="ល្អ"> ១/ ល្អ</label>
+          <label><input type="radio" name="rating" value="មធ្យម"> ២/ មធ្យម</label>
+          <label><input type="radio" name="rating" value="ខ្សោយ"> ៣/ ខ្សោយ</label>
         </div>
       </div>
       <div class="note">NB: សូមចុចប៊ូតុងខាងក្រោម និងរង់ចាំដំណឹងបញ្ជាក់ ដើម្បីបញ្ជាក់ថាការបញ្ជូនបានជោគជ័យ។</div>
@@ -404,6 +411,10 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
             <label class="flabel">Telegram Contact (comma separated)</label>
             <input type="text" id="st-tg" placeholder="@username,+855xxx">
           </div>
+          <div class="fg">
+            <label class="flabel">បន្ថែមម៉ោង Edit បន្ទាប់ End Time (នាទី) <span style="color:var(--muted);font-weight:400">default = 0</span></label>
+            <input type="number" id="st-addtime" placeholder="0" min="0" max="120">
+          </div>
 
           <button class="btn btn-p" onclick="saveSettings()">
             <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>
@@ -420,7 +431,7 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
 // ══════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════
-const GAS_URL = "https://script.google.com/macros/s/AKfycbw9Yh_qoWSoVjpcotVCWePF0GOc80omJRYPGJCI6dzAZ69zmEJe5_QpAK11VBkiNJ37/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbw9Yh_qoWSoVjpcotVCWePF0GOc80omJRYPGJCI6dzAZ69zmEJe5_QpAK11VBkiNJ37/exec"; // ← ប្តូរ
 
 // ── Telegram ──
 const tgApp    = window.Telegram?.WebApp;
@@ -707,24 +718,86 @@ function collectForm() {
     invig1:v("iv1"), invig2:v("iv2"),
     total_stu:v("tstu"), total_abs:v("tabs"), total_female:v("tfem"),
     absent_list:absent, observation_list:observations,
-    other_issues:v("issues"), overall_rating:rv("q4"),
+    other_issues:v("issues"), overall_rating:rv("rating"),
     telegram_id:TG_ID
   };
 }
 
+function highlightError(wrapId) {
+  const el = document.getElementById(wrapId);
+  if (!el) return;
+  el.style.outline = "2px solid var(--red)";
+  el.style.borderRadius = "var(--rs)";
+  setTimeout(() => { el.style.outline = ""; }, 3000);
+}
+
 function validate(d) {
-  if (!d.first_name || !d.last_name) return "សូមបញ្ចូលឈ្មោះ";
-  if (!d.room_no)   return "សូមបញ្ចូលលេខបន្ទប់";
-  if (!d.sessions)  return "សូមជ្រើសសម័យប្រឡង";
-  if (!d.centers)   return "សូមជ្រើសមណ្ឌល";
-  if (!d.subjects)  return "សូមជ្រើសវិញ្ញាសា";
+  // ── Section 0: ព័ត៌មានទូទៅ ──
+  if (!d.title)      return { msg:"សូមជ្រើសចំណងជើងការប្រឡង", el:"title-grp" };
+  if (!d.sessions)   return { msg:"សូមជ្រើសសម័យប្រឡង", el:"session-grp" };
+  if (!d.centers)    return { msg:"សូមជ្រើសមណ្ឌលប្រឡង", el:"center-grp" };
+  if (!d.first_name) return { msg:"សូមបញ្ចូលនាម", el:"fn" };
+  if (!d.last_name)  return { msg:"សូមបញ្ចូលគោត្តនាម", el:"ln" };
+  if (!d.room_no)    return { msg:"សូមបញ្ចូលលេខបន្ទប់", el:"room" };
+  if (!d.subjects)   return { msg:"សូមជ្រើសវិញ្ញាសា", el:"subject-grp" };
+
+  // ── Section I: សភាពការណ៍ ──
+  if (!d.start_time) return { msg:"សូមបញ្ចូលម៉ោងចាប់ផ្តើម", el:"st" };
+  if (!d.end_time)   return { msg:"សូមបញ្ចូលម៉ោងបញ្ចប់", el:"et" };
+  if (!d.q1)         return { msg:"សូមជ្រើសសំណួរទី១", el:"q1-wrap" };
+  if (!d.q2)         return { msg:"សូមជ្រើសសំណួរទី២", el:"q2-wrap" };
+  if (!d.q3)         return { msg:"សូមជ្រើសសំណួរទី៣", el:"q3-wrap" };
+  if (!d.q4)         return { msg:"សូមជ្រើសសំណួរទី៤", el:"q4-wrap" };
+  if (!d.total_stu)  return { msg:"សូមបញ្ចូលចំនួនបេក្ខជនសរុប", el:"tstu" };
+
+  // ── Absent list validation ──
+  const absItems = document.querySelectorAll("#abs-list .dyn-item");
+  for (let i = 0; i < absItems.length; i++) {
+    const el   = absItems[i];
+    const no   = el.querySelector(".abs-no")?.value?.trim();
+    const name = el.querySelector(".abs-name")?.value?.trim();
+    const num  = i + 1;
+    if (!no) {
+      el.querySelector(".abs-no").focus();
+      return { msg:`អវត្តមានល.រ${num}: សូមបញ្ចូលលេខចុះឈ្មោះ`, el:null };
+    }
+    if (!name) {
+      el.querySelector(".abs-name").focus();
+      return { msg:`អវត្តមានល.រ${num}: សូមបញ្ចូលឈ្មោះបេក្ខជន`, el:null };
+    }
+  }
+
+  // ── Female absent cross-check ──
+  const femCount = parseInt(d.total_female) || 0;
+  if (femCount > 0) {
+    const absArr = d.absent_list || [];
+    const femInList = absArr.filter(a => a.gender === "ស្រី").length;
+    if (femInList === 0) {
+      return { msg:`អវត្តមានស្រី=${femCount} ប៉ុន្តែគ្មានបញ្ជីភេទ "ស្រី" — សូម check ឡើងវិញ`, el:"tfem" };
+    }
+    if (femInList !== femCount) {
+      return { msg:`អវត្តមានស្រី=${femCount} ប៉ុន្តែបញ្ជីមានភេទ "ស្រី" ${femInList}នាក់ — សូម check ឡើងវិញ`, el:"tfem" };
+    }
+  }
+
+  // ── Section III: Rating ──
+  if (!d.overall_rating) return { msg:"សូមវាយតម្លៃដំណើរការប្រឡងជារួម", el:"rating-wrap" };
+
   return null;
 }
 
 async function submitReport() {
   const data = collectForm();
   const er = validate(data);
-  if (er) { showToast(er, "error"); return; }
+  if (er) {
+    showToast(er.msg, "error");
+    if (er.el) {
+      highlightError(er.el);
+      const el = document.getElementById(er.el);
+      if (el) el.scrollIntoView({ behavior:"smooth", block:"center" });
+    }
+    return;
+  }
 
   // OFFLINE → queue it
   if (!navigator.onLine) {
@@ -859,9 +932,10 @@ function switchAdminTab(tab, el) {
 }
 
 function loadSettingsIntoEditor() {
-  document.getElementById("st-title1").value = settings.title1 || "";
-  document.getElementById("st-title2").value = settings.title2 || "";
-  document.getElementById("st-tg").value     = settings.telegram_contact || "";
+  document.getElementById("st-title1").value   = settings.title1 || "";
+  document.getElementById("st-title2").value   = settings.title2 || "";
+  document.getElementById("st-tg").value       = settings.telegram_contact || "";
+  document.getElementById("st-addtime").value  = settings.additional_time ?? 0;
   loadTags("centers",  settings.centers  || []);
   loadTags("sessions", settings.sessions || []);
   loadTags("subjects", settings.subjects || []);
@@ -913,20 +987,21 @@ async function saveSettings() {
     centers  : tagState.centers,
     sessions : tagState.sessions,
     subjects : tagState.subjects,
-    telegram_contact: document.getElementById("st-tg").value.trim()
+    telegram_contact: document.getElementById("st-tg").value.trim(),
+    additional_time : parseInt(document.getElementById("st-addtime").value) || 0
   };
   showLoading(true);
   try {
     const r = await postGAS(payload);
     if (r.status === "ok") {
       showToast(r.message || "Settings saved!", "success");
-      // Update local settings & re-render form
       settings.title1   = payload.title1;
       settings.title2   = payload.title2;
       settings.centers  = payload.centers;
       settings.sessions = payload.sessions;
       settings.subjects = payload.subjects;
       settings.telegram_contact = payload.telegram_contact;
+      settings.additional_time  = payload.additional_time;
       renderSettings();
     } else {
       showToast(r.message || "Error", "error");
@@ -977,13 +1052,24 @@ function switchTab(tab, el) {
   el.classList.add("active");
 }
 
+// ══════════════════════════════════════════════
+// UTILS — postGAS uses no-cors workaround for GAS
+// GAS always redirects POST → use fetch with redirect:follow
+// ══════════════════════════════════════════════
 async function postGAS(body) {
+  // GAS Web App requires GET for reads, POST for writes.
+  // CORS preflight is blocked by GAS — use no-cors + read via GET trick:
+  // For mutations: POST with mode no-cors (fire-and-forget), then verify via GET
+  // For queries: GET only
   const r = await fetch(GAS_URL, {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify(body)
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" }, // avoid preflight
+    body: JSON.stringify(body),
+    redirect: "follow"
   });
-  return r.json();
+  const text = await r.text();
+  try { return JSON.parse(text); }
+  catch { return { status:"error", message:"Response parse error: "+text.slice(0,100) }; }
 }
 
 function showToast(msg, type="") {
