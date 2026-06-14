@@ -250,35 +250,35 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
 
     <!-- Section I -->
     <div class="card">
-      <div class="sec-title">I. សភាពការណ៍នៅវេទ</div>
+      <div class="sec-title">I. សភាពការណ៍ទូទៅ</div>
       <div class="row2 fg">
         <div><label class="flabel">ម៉ោងចាប់ផ្តើម</label><input type="time" id="st"></div>
         <div><label class="flabel">ម៉ោងបញ្ចប់</label><input type="time" id="et"></div>
       </div>
 
       <div class="fg">
-        <div class="q-lbl">- តើអ្នករក្រោងបានដឹកជម្រុញអ្នករៀនចូលអង្គុយ និងចែករំលែកឯកសារ/ក្រដាសប្រឡងចូលបន្ទប់ប្រឡងដើម្បីចូលបន្ទប់ប្រឡង? <span style="color:var(--red)">*</span></div>
+        <div class="q-lbl">- តើអនុរក្សបានផ្ទៀងផ្ទាត់បេក្ខជនជាមួយនិងសាលកបត្រនៅពេលហៅឈ្មោះចូលបន្ទប់ឬទេ <span style="color:var(--red)">*</span></div>
         <div class="inline-r" id="q1-wrap">
           <label><input type="radio" name="q1" value="បាន"> បាន</label>
           <label><input type="radio" name="q1" value="មិនបាន"> មិនបាន</label>
         </div>
       </div>
       <div class="fg">
-        <div class="q-lbl">- តើអ្នករក្រោងបានពិនិត្យកំណត់ហត្ថលេខា និងករណីឆ្លើយតបមិនប្រក្រតី និងរបស់បេក្ខជននៅតាមតុបន្ទប់ប្រឡង? <span style="color:var(--red)">*</span></div>
+        <div class="q-lbl">- តើអនុរក្សបានឆែករកសំណៅឯកសារ និងគ្រឿងអេឡិចត្រូនិករបស់បេក្ខជននៅពេលហៅឈ្មោះចូលបន្ទប់ឬទេ? <span style="color:var(--red)">*</span></div>
         <div class="inline-r" id="q2-wrap">
           <label><input type="radio" name="q2" value="បាន"> បាន</label>
           <label><input type="radio" name="q2" value="មិនបាន"> មិនបាន</label>
         </div>
       </div>
       <div class="fg">
-        <div class="q-lbl">- តើអ្នករក្រោងអានបញ្ជីឈ្មោះ និងឆ្លើយតបការប្រឡង ដើម្បីពិនិត្យ​បេក្ខជននៅតាមតុបន្ទប់ប្រឡង? <span style="color:var(--red)">*</span></div>
+        <div class="q-lbl">- តើអនុរក្សបានអានបទបញ្ញត្តិដល់បេក្ខជនដែរឬទេ? <span style="color:var(--red)">*</span></div>
         <div class="inline-r" id="q3-wrap">
           <label><input type="radio" name="q3" value="បាន"> បាន</label>
           <label><input type="radio" name="q3" value="មិនបាន"> មិនបាន</label>
         </div>
       </div>
       <div class="fg">
-        <div class="q-lbl">- តើអ្នករក្រោងបា្រប់ smartphone, Smart watch... ក្នុងបន្ទប់ប្រឡងដែលមានប្រើ? <span style="color:var(--red)">*</span></div>
+        <div class="q-lbl">- តើអនុរក្សបានប្រើប្រាស់ទូរសព្ទ ,Smart watch... ក្នុងបន្ទប់ប្រឡងដែរឬទេ? <span style="color:var(--red)">*</span></div>
         <div class="inline-r" id="q4-wrap" style="flex-direction:column">
           <label><input type="radio" name="q4" value="បានប្រើ"> បានប្រើ</label>
           <label><input type="radio" name="q4" value="បានយកមកតែមិនប្រើ"> បានយកមកតែមិនប្រើ</label>
@@ -288,9 +288,9 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
 
       <hr class="div">
       <div class="stats-row">
-        <div class="stat-box"><label>សរុបបេក្ខជន</label><input type="number" id="tstu" placeholder="0" min="0"></div>
-        <div class="stat-box"><label>អវត្តមានសរុប</label><input type="number" id="tabs" placeholder="0" min="0" readonly style="background:var(--blue-l)"></div>
-        <div class="stat-box"><label>អវត្តមានស្រី</label><input type="number" id="tfem" placeholder="0" min="0"></div>
+        <div class="stat-box"><label>ចំនួនបេក្ខជនសរុប៖</label><input type="number" id="tstu" placeholder="0" min="0"></div>
+        <div class="stat-box"><label>ចំនួនអវត្តមានសរុប៖</label><input type="number" id="tabs" placeholder="0" min="0" readonly style="background:var(--blue-l)"></div>
+        <div class="stat-box"><label>ស្រី</label><input type="number" id="tfem" placeholder="0" min="0"></div>
       </div>
 
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
@@ -302,7 +302,7 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
 
     <!-- Section II -->
     <div class="card">
-      <div class="sec-title">II. ចំណុចកត់សម្គាល់</div>
+      <div class="sec-title">II. ចំណុចកត់សម្គាល់ក្នុងដំណើរការប្រឡងសំណេរ</div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <span style="font-size:13px;color:var(--muted)">ករណីពិសេស ឬការកត់សម្គាល់</span>
         <button class="btn btn-o btn-sm" onclick="addObs()">+ បន្ថែម</button>
@@ -315,14 +315,14 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
       <div class="sec-title">III. បញ្ហាផ្សេងៗ</div>
       <div class="fg"><textarea id="issues" placeholder="សរសេររៀបរាប់..." rows="4"></textarea></div>
       <div class="fg">
-        <div class="q-lbl">វាយតម្លៃដំណើរការប្រឡងជារួម <span style="color:var(--red)">*</span></div>
+        <div class="q-lbl">វាយតម្លៃដំណើរការប្រឡងជារួមនៅក្នុងបន្ទប់៖ <span style="color:var(--red)">*</span></div>
         <div class="inline-r" id="rating-wrap">
           <label><input type="radio" name="rating" value="ល្អ"> ១/ ល្អ</label>
           <label><input type="radio" name="rating" value="មធ្យម"> ២/ មធ្យម</label>
           <label><input type="radio" name="rating" value="ខ្សោយ"> ៣/ ខ្សោយ</label>
         </div>
       </div>
-      <div class="note">NB: សូមចុចប៊ូតុងខាងក្រោម និងរង់ចាំដំណឹងបញ្ជាក់ ដើម្បីបញ្ជាក់ថាការបញ្ជូនបានជោគជ័យ។</div>
+      <div class="note">NB: សូមថតបញ្ជីវត្តមាន និងរូបភាពនៃសកម្មភាពមិនប្រក្រតីដែលបានកើតឡើង និងប្រគល់របាយការណ៍នេះជូនអ្នកធ្វើរបាយការណ៍ប្រចាំមណ្ឌល។</div>
     </div>
 
     <div style="padding-bottom:24px">
@@ -404,7 +404,7 @@ hr.div{border:none;border-top:1.5px solid var(--border);margin:12px 0}
 
       <!-- Sub-tabs -->
       <div class="settings-tab-bar">
-        <button class="stab active" onclick="switchAdminTab('reports',this)">📋 របាយការណ៍</button>
+        <button class="stab active" onclick="switchAdminTab('reports',this)">📋 របាយការណ៍តាមបន្ទប់</button>
         <button class="stab" onclick="switchAdminTab('settings',this)">⚙️ Settings</button>
       </div>
 
@@ -790,7 +790,7 @@ function addAbsent(prefill) {
     <div class="inum">ល.រ ${absIdx}</div>
     <button class="rm" onclick="removeItem('${id}');syncAbsCount()">✕</button>
     <div class="row2" style="margin-bottom:7px">
-      <input type="text" placeholder="លេខចុះឈ្មោះ" class="abs-no" value="${prefill?.no||''}">
+      <input type="text" placeholder="តុលេខ" class="abs-no" value="${prefill?.no||''}">
       <select class="abs-gender">
         <option value="ប្រុស" ${prefill?.gender==='ប្រុស'?'selected':''}>ប្រុស</option>
         <option value="ស្រី"  ${prefill?.gender==='ស្រី'?'selected':''}>ស្រី</option>
@@ -812,13 +812,13 @@ function addObs(prefill) {
     <button class="rm" onclick="removeItem('${id}')">✕</button>
     <div class="row2" style="margin-bottom:7px">
       <input type="text" placeholder="ឈ្មោះបេក្ខជន" class="obs-name" value="${prefill?.name||''}">
-      <input type="text" placeholder="លេខចុះឈ្មោះ" class="obs-no" value="${prefill?.no||''}">
+      <input type="text" placeholder="លេខតុ" class="obs-no" value="${prefill?.no||''}">
     </div>
     <div class="row2" style="margin-bottom:7px">
       <input type="date" class="obs-date" value="${prefill?.date||''}">
       <input type="time" class="obs-time" value="${prefill?.time||''}">
     </div>
-    <input type="text" placeholder="ចំណុចកត់សម្គាល់" class="obs-note" value="${prefill?.note||''}" style="width:100%;margin-bottom:7px">
+    <input type="text" placeholder="កំណត់សម្គាល់" class="obs-note" value="${prefill?.note||''}" style="width:100%;margin-bottom:7px">
     <input type="text" placeholder="ចំណាត់ការ" class="obs-action" value="${prefill?.action||''}" style="width:100%">
   `;
   document.getElementById("obs-list").appendChild(d);
@@ -1304,9 +1304,9 @@ function updateMyReportsBadge(count) {
   const btn = document.getElementById("myreports-tab-btn");
   if (!btn) return;
   if (count > 0) {
-    btn.innerHTML = `📋 របស់ខ្ញុំ<span class="pending-badge" style="background:var(--blue)">${count}</span>`;
+    btn.innerHTML = `📋 របាយការណ៍របស់ខ្ញុំ<span class="pending-badge" style="background:var(--blue)">${count}</span>`;
   } else {
-    btn.textContent = "📋 របស់ខ្ញុំ";
+    btn.textContent = "📋 របាយការណ៍របស់ខ្ញុំ";
   }
 }
 
